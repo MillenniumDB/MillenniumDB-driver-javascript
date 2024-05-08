@@ -57,7 +57,7 @@ class WebSocketConnection {
     close(): Promise<void> {
         if (this._closingPromise === null) {
             this._closingPromise = new Promise((resolve, _) => {
-                if (this._ws.readyState !== WebSocket.CLOSED) {
+                if (this._ws.readyState !== 3) { // 3 === WebSocket.CLOSED
                     this._open = false;
                     this._ws.onclose = () => {
                         this._wsOpen = false;
