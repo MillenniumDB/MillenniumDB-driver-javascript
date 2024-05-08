@@ -5,7 +5,7 @@ on:
       - main
   workflow_dispatch:
 jobs:
-  build:
+  build_and_publish:
     name: Build millenniumdb-driver package
     runs-on: ubuntu-latest
     permissions:
