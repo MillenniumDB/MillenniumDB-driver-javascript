@@ -1,9 +1,9 @@
 name: Build and publish package
 on:
-  workflow_run:
-    workflows: [Build and deploy documentation]
-    types:
-      - completed
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 jobs:
   build:
     name: Build millenniumdb-driver package
