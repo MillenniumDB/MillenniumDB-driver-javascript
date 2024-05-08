@@ -1,0 +1,10 @@
+node_modules/
+
+# Sources
+src/
+test/
+
+.prettierrc
+.gitignore
+jest.config.ts
+rollup.config.js

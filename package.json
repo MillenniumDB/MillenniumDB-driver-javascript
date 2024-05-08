@@ -1,0 +1,74 @@
+{
+  "name": "millenniumdb-driver",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/MillenniumDB/MillenniumDB-driver-javascript.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MillenniumDB/MillenniumDB-driver-javascript/issues"
+  },
+  "homepage": "https://github.com/MillenniumDB/MillenniumDB-driver-javascript#readme",
+  "version": "1.4.3",
+  "description": "The official MillenniumDB driver for JavaScript",
+  "author": "Vicente Calisto",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "types/index.d.ts",
+  "files": [
+    "lib/",
+    "types/",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "check-types:watch": "npm run check-types -- --watch",
+    "build": "npm run clean:build && npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir lib --extensions '.ts'",
+    "rollup": "rollup -c --bundleConfigAsCjs",
+    "test": "jest --verbose",
+    "prepublishOnly": "npm run build && npm run test && npm run rollup",
+    "doc": "npm run clean:doc && typedoc",
+    "clean:build": "rimraf lib/ types/",
+    "clean:doc": "rimraf doc/"
+  },
+  "keywords": [
+    "millenniumdb",
+    "quad model",
+    "sparql",
+    "rdf",
+    "database",
+    "driver",
+    "db",
+    "graph",
+    "graph database"
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.24.5",
+    "@babel/core": "^7.24.5",
+    "@babel/parser": "^7.24.4",
+    "@babel/plugin-transform-runtime": "^7.24.3",
+    "@babel/preset-env": "^7.24.5",
+    "@babel/preset-typescript": "^7.24.1",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/jest": "^29.5.12",
+    "@types/ws": "^8.5.10",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.16.4",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typedoc": "^0.25.13",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.24.5",
+    "buffer": "^6.0.3",
+    "ws": "^8.17.0"
+  }
+}
