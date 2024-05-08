@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows: 
-      - Build and deploy documentation
+      - Build and publish package
     types:
       - completed
 jobs:
