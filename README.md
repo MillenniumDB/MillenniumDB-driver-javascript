@@ -12,7 +12,7 @@ npm install millenniumdb-driver
 
 Then you can require the MillenniumDB object module:
 
-```bash
+```js
 var MillenniumDB = require('millenniumdb-driver');
 ```
 
