@@ -1,7 +1,8 @@
 name: Build and deploy documentation
 on: 
   workflow_run:
-    workflows: [Build and deploy documentation]
+    workflows: 
+      - Build and deploy documentation
     types:
       - completed
 jobs:
