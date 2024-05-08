@@ -40,10 +40,7 @@ class WebSocketConnection {
      * @param iobuffer a buffer containing the request
      */
     write(iobuffer: IOBuffer): void {
-        if (!this._open) {
-            // this._handleError();
-            return;
-        }
+        this._ensureOpen();
 
         if (!this._wsOpen) {
             this._pendingRequests.push(iobuffer);
@@ -75,6 +72,12 @@ class WebSocketConnection {
         }
 
         return this._closingPromise;
+    }
+
+    private _ensureOpen(): void {
+        if (!this._open) {
+            throw new MillenniumDBError('WebSocketConnection Error: connection is closed');
+        }
     }
 
     /**

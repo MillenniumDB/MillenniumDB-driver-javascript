@@ -1,14 +1,24 @@
 # MillenniumDB driver for JavaScript (Browser and Node.js)
 
+* [GitHub repository](https://github.com/MillenniumDB/MillenniumDB-driver-javascript/)
+* [NPM package](https://www.npmjs.com/package/millenniumdb-driver/)
+* [API documentation](https://millenniumdb.github.io/MillenniumDB-driver-javascript/)
+
 ## Installation - npm
 
 ```bash
-npm i millenniumdb-driver
+npm install millenniumdb-driver
+```
+
+Then you can require the MillenniumDB object module:
+
+```bash
+var MillenniumDB = require('millenniumdb-driver');
 ```
 
 ## Installation - browser
 
-Make the MillenniumDB object available globally with:
+Make the `MillenniumDB` object available globally with:
 
 ```html
 <!-- Direct reference non-minified -->
@@ -48,26 +58,50 @@ Or use the ESM versions
 
 ## Usage
 
-First you must establish a connection with the database:
+### Creating a Driver instance
+
+First you must create a `Driver` instance:
 
 ```js
-// Create a driver instance
 const url = '<URL for the MillenniumDB server>';
-const driver = MillenniumDB.driver(url);
+const driver = MillenniumDB.driver(url)
+```
 
-// Acquire a session
+When you are done with the driver, you should close it before exiting the application.
+
+```js
+driver.close();
+```
+
+Usually you would like to have a single `Driver` instance in your application.
+
+### Acquiring a Session
+
+For sending queries to the MillenniumDB server, you must acquire a session instance:
+
+```js
 const session = driver.session();
+```
 
-// Execute a query
+Then you can send queries through your session
+
+```js
 const query = 'MATCH (?from)-[:?type]->(?to) RETURN * LIMIT 10';
 const result = session.run(query);
 ```
 
-Then for consuming the results you can use any of the available APIs. They should never be mixed because it would generate undefined behavior on the result consumption. The preferred way to consume the results is using the Subscribe API, as it is the only that does not hold all the results in memory, it just streams it to an observer object provided by the user.
+### Consuming results
 
-It is important to mention that the session **must be closed when your operations are done**.
+The alternatives for consuming results must never be mixed because it would generate undefined behavior on your client and/or server. It is important to mention that the session **must be closed when your operations are done**.
 
-### Subscribe API
+#### Streaming API
+
+This is the preferred way to consume the results, as it is the only that does not hold all the results in memory, it just streams it to an observer object provided by the user. The observer must implement the following methods:
+
+* `onKeys`: First event trigerred, just once. It will return the column names of the query.
+* `onRecord`: Subsequent events triggered for each record available in the query result. It will return a `Record` object.
+* `onSuccess`: Trigerred at the end of the query execution. It will return a summary for the query. No more events are triggered afterwards.
+* `onError`: Trigerred if an error occurs during the query execution. It will return an error. No more events are triggered afterwards. This could even happen before receiving the `onKeys` event.
 
 ```js
 result.subscribe({
@@ -88,7 +122,7 @@ result.subscribe({
 });
 ```
 
-#### Promise-based API with async/await syntax
+### Promise-based API with async/await syntax
 
 ```js
 const keys = await result.keys();
@@ -96,7 +130,7 @@ const records = await result.records();
 const summary = await result.summary();
 ```
 
-#### Promise-based API with `.then()/.catch()/.finally()` syntax
+### Promise-based API with `.then()`, `.catch()`, `.finally()` syntax
 
 ```js
 // catch/finally are ommited for brevity

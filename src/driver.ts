@@ -8,7 +8,9 @@ import MillenniumDBError from './millenniumdb-error';
  * driver instance.
  */
 class Driver {
+    private _open: boolean;
     private readonly _url: URL;
+    private readonly _sessions: Array<Session>;
 
     /**
      * This constructor should never be called directly
@@ -16,20 +18,43 @@ class Driver {
      * @param url the URL for the MillenniumDB server
      */
     constructor(url: string) {
+        this._open = true;
         this._url = new URL(url);
+        this._sessions = [];
     }
 
     /**
      * Create a {@link Session}, establishing a new connection with the remote MillenniumDB instance.
-     *
      * The {@link Session} must be closed when your operations are done.
      *
      * @param options the options for the {@link Session}
      * @returns a new {@link Session} instance
      */
     session(options: SessionOptions = DEFAULT_SESSION_OPTIONS): Session {
+        this._ensureOpen();
         validateSessionOptions(options);
-        return new Session(this._url, options);
+        const session = new Session(this._url, options);
+        this._sessions.push(session);
+        return session;
+    }
+
+    /**
+     * Close all open {@link Session}s
+     *
+     * @returns Promise that will be resolved when all {@link Session}s are closed
+     */
+    async close(): Promise<void> {
+        if (this._open) {
+            this._open = false;
+            await Promise.all(this._sessions.map((session) => session.close()));
+        }
+        return Promise.resolve();
+    }
+
+    private _ensureOpen(): void {
+        if (!this._open) {
+            throw new MillenniumDBError('Driver Error: driver is closed');
+        }
     }
 }
 

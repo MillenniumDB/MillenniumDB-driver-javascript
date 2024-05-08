@@ -1,12 +1,13 @@
-import IOBuffer from './iobuffer';
-import WebSocketConnection from './websocket-connection';
 import ChunkDecoder from './chunk-decoder';
+import IOBuffer from './iobuffer';
 import MessageDecoder from './message-decoder';
+import MillenniumDBError from './millenniumdb-error';
+import Protocol from './protocol';
+import RequestBuilder from './request-builder';
 import ResponseHandler, { ResponseMessage } from './response-handler';
 import Result from './result';
 import StreamObserver from './stream-observer';
-import RequestBuilder from './request-builder';
-import Protocol from './protocol';
+import WebSocketConnection from './websocket-connection';
 
 /**
  * Options for {@link Driver.session}
@@ -55,6 +56,7 @@ class Session {
      * @returns a {@link Result} for the query
      */
     run(query: string): Result {
+        this._ensureOpen();
         const streamObserver = new StreamObserver(
             this._fetchMore.bind(this),
             this._discardAll.bind(this)
@@ -76,6 +78,12 @@ class Session {
             }
 
             await this._connection.close();
+        }
+    }
+
+    private _ensureOpen(): void {
+        if (!this._open) {
+            throw new MillenniumDBError('Session Error: session is closed');
         }
     }
 
