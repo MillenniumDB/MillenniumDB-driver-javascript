@@ -9,7 +9,7 @@ import ResponseHandler, { ResponseMessage } from './response-handler';
 import Result from './result';
 import Session, { SessionOptions } from './session';
 import StreamObserver, { ResultObserver, Summary } from './stream-observer';
-import {WebSocketType} from './websocket-client';
+import { WebSocketType } from './websocket-client';
 import WebSocketConnection from './websocket-connection';
 
 /**
@@ -22,8 +22,18 @@ const driver = (url: string): Driver => {
     return new Driver(url);
 };
 
+const types = {
+    Node,
+    Edge,
+    PathSegment,
+    Path,
+    Result,
+    Record,
+    DateTime,
+};
+
 export default { driver };
-export { driver };
+export { driver, types };
 
 // Some types may be innecessary for the user, but I want to expose them in the documentation
 export type {
