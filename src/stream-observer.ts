@@ -90,6 +90,8 @@ class StreamObserver {
     onSuccess(summary: Summary) {
         switch (this._currentState) {
             case StreamObserver.State.WAITING_RUN_SUCCESS: {
+                this._currentState = StreamObserver.State.WAITING_PULL_OR_DISCARD_SUCCESS;
+
                 // The success of a RUN request
                 this._keys = summary.projectionVariables;
                 for (let i = 0; i < this._keys.length; ++i) {
@@ -101,7 +103,6 @@ class StreamObserver {
                 }
 
                 this._fetchMore();
-                this._currentState = StreamObserver.State.WAITING_PULL_OR_DISCARD_SUCCESS;
                 break;
             }
             case StreamObserver.State.WAITING_PULL_OR_DISCARD_SUCCESS: {
@@ -109,13 +110,12 @@ class StreamObserver {
                 if (summary.hasNext) {
                     this._fetchMore();
                 } else {
-                    this._summary = summary;
+                    this._currentState = StreamObserver.State.FINISHED;
 
+                    this._summary = summary;
                     for (const resultObserver of this._resultObservers) {
                         resultObserver.onSuccess?.(this._summary);
                     }
-
-                    this._currentState = StreamObserver.State.FINISHED;
                 }
                 break;
             }
@@ -141,7 +141,7 @@ class StreamObserver {
     cancel(): void {
         if (this._currentState !== StreamObserver.State.FINISHED) {
             this._discardAll();
-            this._currentState = StreamObserver.State.WAITING_DISCARD_SUCCESS;
+            this._currentState = StreamObserver.State.WAITING_PULL_OR_DISCARD_SUCCESS;
         }
     }
 }
@@ -150,7 +150,6 @@ namespace StreamObserver {
     export enum State {
         WAITING_RUN_SUCCESS,
         WAITING_PULL_OR_DISCARD_SUCCESS,
-        WAITING_DISCARD_SUCCESS,
         FINISHED, // The query has finished either due to success or failure
     }
 }
