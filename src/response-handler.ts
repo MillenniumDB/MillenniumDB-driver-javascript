@@ -92,6 +92,19 @@ class ResponseHandler {
     }
 
     /**
+     * Trigger the error event to all observers
+     *
+     * @param errorString the error to notify
+     */
+    notifyError(errorString: string): void {
+        while (this._currentObserver !== null) {
+            console.log("currentObserver", this._currentObserver);
+            this._currentObserver?.onError(errorString);
+            this._nextObserver();
+        }
+    }
+
+    /**
      * Shift the current observer to the next one in the queue
      */
     private _nextObserver(): void {

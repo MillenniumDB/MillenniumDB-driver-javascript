@@ -1,6 +1,7 @@
 import IOBuffer from './iobuffer';
 
 import buffer from 'buffer';
+import MillenniumDBError from './millenniumdb-error';
 
 /**
  * Decode the incoming data from the server
@@ -50,7 +51,7 @@ class ChunkDecoder {
                     break;
                 }
                 default: {
-                    throw new Error(
+                    throw new MillenniumDBError(
                         `ChunkDecoder Error: Invalid state with code 0x${(
                             this._currentState as number
                         ).toString(16)}`

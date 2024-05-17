@@ -43,10 +43,14 @@ class Session {
         this._open = true;
         this._results = [];
         this._options = options;
-        this._connection = new WebSocketConnection(url, this._onServerMessage);
         this._chunkDecoder = new ChunkDecoder(this._onChunksDecoded);
         this._messageDecoder = new MessageDecoder();
         this._responseHandler = new ResponseHandler();
+        this._connection = new WebSocketConnection(
+            url,
+            this._onServerMessage.bind(this),
+            this._responseHandler.notifyError.bind(this._responseHandler)
+        );
     }
 
     /**
