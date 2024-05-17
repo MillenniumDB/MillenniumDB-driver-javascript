@@ -92,16 +92,14 @@ class ResponseHandler {
     }
 
     /**
-     * Trigger the error event to all observers
+     * Notify the connection error to current observer and cancel the other observers
      *
      * @param errorString the error to notify
      */
-    notifyError(errorString: string): void {
-        while (this._currentObserver !== null) {
-            console.log("currentObserver", this._currentObserver);
-            this._currentObserver?.onError(errorString);
-            this._nextObserver();
-        }
+    triggerConnectionError(errorString: string): void {
+        this._currentObserver?.onError(errorString);
+        this._currentObserver = null;
+        this._pendingObservers.length = 0;
     }
 
     /**

@@ -49,7 +49,7 @@ class Session {
         this._connection = new WebSocketConnection(
             url,
             this._onServerMessage.bind(this),
-            this._responseHandler.notifyError.bind(this._responseHandler)
+            this._responseHandler.triggerConnectionError.bind(this._responseHandler)
         );
     }
 
