@@ -140,6 +140,7 @@ class StreamObserver {
 
     cancel(): void {
         if (this._currentState !== StreamObserver.State.FINISHED) {
+            this._resultObservers.length = 0;
             this._discardAll();
             this._currentState = StreamObserver.State.WAITING_PULL_OR_DISCARD_SUCCESS;
         }
