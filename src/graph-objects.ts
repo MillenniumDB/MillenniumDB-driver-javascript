@@ -116,10 +116,10 @@ export class Path {
     /** The number of segments in the path */
     public readonly length: number;
 
-    constructor(segments: Array<PathSegment>) {
+    constructor(start: Node, end: Node, segments: Array<PathSegment>) {
+        this.start = start;
+        this.end = end;
         this.segments = segments;
         this.length = segments.length;
-        this.start = this.segments[0]!.from;
-        this.end = this.segments[this.length - 1]!.to;
     }
 }

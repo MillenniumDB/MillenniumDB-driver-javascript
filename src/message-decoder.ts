@@ -52,11 +52,17 @@ class MessageDecoder {
             }
             case Protocol.DataType.PATH: {
                 const pathLength = iobuffer.readUint32();
-                const pathSegments: Array<PathSegment> = [];
 
+                if (pathLength === 0) {
+                    const node = this.decode(iobuffer);
+                    return new Path(node, node, []);
+                }
+
+                const pathSegments: Array<PathSegment> = [];
                 let reverse: boolean;
-                let from, to, type: Node;
+                let start, end, from, to, type: Node;
                 from = this.decode(iobuffer);
+                start = from;
                 for (let i = 0; i < pathLength; ++i) {
                     reverse = this.decode(iobuffer);
                     type = this.decode(iobuffer);
@@ -64,7 +70,8 @@ class MessageDecoder {
                     pathSegments.push(new PathSegment(from, to, type, reverse));
                     from = to;
                 }
-                return new Path(pathSegments);
+                end = from;
+                return new Path(start, end, pathSegments);
             }
             default:
                 throw new MillenniumDBError(
