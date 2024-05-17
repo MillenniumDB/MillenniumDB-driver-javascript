@@ -28,20 +28,20 @@ class IOBuffer {
         this._currentPosition = 0;
     }
 
-    readUint8(): number {
-        return this.buffer.readUint8(this._updateCurrentPosition(1));
+    readUInt8(): number {
+        return this.buffer.readUInt8(this._updateCurrentPosition(1));
     }
 
-    readUint16(): number {
-        return this.buffer.readUint16BE(this._updateCurrentPosition(2));
+    readUInt16(): number {
+        return this.buffer.readUInt16BE(this._updateCurrentPosition(2));
     }
 
-    readUint32(): number {
-        return this.buffer.readUint32BE(this._updateCurrentPosition(4));
+    readUInt32(): number {
+        return this.buffer.readUInt32BE(this._updateCurrentPosition(4));
     }
 
-    readUint64(): bigint {
-        return this.buffer.readBigUint64BE(this._updateCurrentPosition(8));
+    readUInt64(): bigint {
+        return this.buffer.readBigUInt64BE(this._updateCurrentPosition(8));
     }
 
     readInt64(): bigint {
@@ -66,16 +66,16 @@ class IOBuffer {
         );
     }
 
-    writeUint8(value: number): void {
-        this.buffer.writeUint8(value, this._updateCurrentPosition(1));
+    writeUInt8(value: number): void {
+        this.buffer.writeUInt8(value, this._updateCurrentPosition(1));
     }
 
-    writeUint16(value: number): void {
-        this.buffer.writeUint16BE(value, this._updateCurrentPosition(2));
+    writeUInt16(value: number): void {
+        this.buffer.writeUInt16BE(value, this._updateCurrentPosition(2));
     }
 
-    writeUint32(value: number): void {
-        this.buffer.writeUint32BE(value, this._updateCurrentPosition(4));
+    writeUInt32(value: number): void {
+        this.buffer.writeUInt32BE(value, this._updateCurrentPosition(4));
     }
 
     writeBytes(value: buffer.Buffer): void {

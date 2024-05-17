@@ -63,18 +63,18 @@ class ChunkDecoder {
     private _handleHeaderFirstByte(iobuffer: IOBuffer) {
         if (iobuffer.remaining() > 1) {
             // Header readed entirely
-            this._currentChunkRemaining = iobuffer.readUint16();
+            this._currentChunkRemaining = iobuffer.readUInt16();
             this._handleDecodedHeader();
         } else {
             // Need to receive the second byte
             this._currentChunkRemaining = 0;
-            this._currentChunkRemaining |= iobuffer.readUint8() << 8;
+            this._currentChunkRemaining |= iobuffer.readUInt8() << 8;
             this._currentState = ChunkDecoder.State.READING_HEADER_SECOND_BYTE;
         }
     }
 
     private _handleHeaderSecondByte(iobuffer: IOBuffer) {
-        this._currentChunkRemaining |= iobuffer.readUint8();
+        this._currentChunkRemaining |= iobuffer.readUInt8();
         this._handleDecodedHeader();
     }
 

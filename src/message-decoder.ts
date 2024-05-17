@@ -5,7 +5,7 @@ import Protocol from './protocol';
 
 class MessageDecoder {
     decode(iobuffer: IOBuffer): any {
-        const type = iobuffer.readUint8();
+        const type = iobuffer.readUInt8();
 
         switch (type) {
             case Protocol.DataType.NULL_: {
@@ -18,13 +18,13 @@ class MessageDecoder {
                 return true;
             }
             case Protocol.DataType.UINT8: {
-                return iobuffer.readUint8();
+                return iobuffer.readUInt8();
             }
             case Protocol.DataType.UINT32: {
-                return iobuffer.readUint32();
+                return iobuffer.readUInt32();
             }
             case Protocol.DataType.INT64: {
-                return iobuffer.readUint64();
+                return iobuffer.readUInt64();
             }
             case Protocol.DataType.FLOAT: {
                 return iobuffer.readFloat();
@@ -51,7 +51,7 @@ class MessageDecoder {
                 return new DateTime(dateTimeString);
             }
             case Protocol.DataType.PATH: {
-                const pathLength = iobuffer.readUint32();
+                const pathLength = iobuffer.readUInt32();
 
                 if (pathLength === 0) {
                     const node = this.decode(iobuffer);
@@ -81,12 +81,12 @@ class MessageDecoder {
     }
 
     private _decodeString(iobuffer: IOBuffer): string {
-        const size = iobuffer.readUint32();
+        const size = iobuffer.readUInt32();
         return iobuffer.readString(size);
     }
 
     private _decodeList(iobuffer: IOBuffer): Array<any> {
-        const size = iobuffer.readUint32();
+        const size = iobuffer.readUInt32();
         const res = [];
         for (let i = 0; i < size; ++i) {
             res.push(this.decode(iobuffer));
@@ -95,10 +95,10 @@ class MessageDecoder {
     }
 
     private _decodeMap(iobuffer: IOBuffer): Record<string, any> {
-        const size = iobuffer.readUint32();
+        const size = iobuffer.readUInt32();
         const res: Record<string, any> = {};
         for (let i = 0; i < size; ++i) {
-            const keyType = iobuffer.readUint8();
+            const keyType = iobuffer.readUInt8();
             if (keyType !== Protocol.DataType.STRING) {
                 throw new MillenniumDBError('MessageDecoder Error: Map keys must be a string');
             }

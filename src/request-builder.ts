@@ -21,9 +21,9 @@ class RequestBuilder {
         const queryBytesLength = queryBytes.byteLength;
         const buffer = new ArrayBuffer(6 + queryBytesLength);
         const iobuffer = new IOBuffer(buffer);
-        iobuffer.writeUint8(Protocol.RequestType.RUN);
-        iobuffer.writeUint8(Protocol.DataType.STRING);
-        iobuffer.writeUint32(queryBytesLength);
+        iobuffer.writeUInt8(Protocol.RequestType.RUN);
+        iobuffer.writeUInt8(Protocol.DataType.STRING);
+        iobuffer.writeUInt32(queryBytesLength);
         iobuffer.writeBytes(queryBytes);
         iobuffer.reset();
 
@@ -39,9 +39,9 @@ class RequestBuilder {
     static pull(numRecords: number): IOBuffer {
         const buffer = new ArrayBuffer(6);
         const iobuffer = new IOBuffer(buffer);
-        iobuffer.writeUint8(Protocol.RequestType.PULL);
-        iobuffer.writeUint8(Protocol.DataType.UINT32);
-        iobuffer.writeUint32(numRecords);
+        iobuffer.writeUInt8(Protocol.RequestType.PULL);
+        iobuffer.writeUInt8(Protocol.DataType.UINT32);
+        iobuffer.writeUInt32(numRecords);
         iobuffer.reset();
 
         return iobuffer;
@@ -50,7 +50,7 @@ class RequestBuilder {
     static discard(): IOBuffer {
         const buffer = new ArrayBuffer(1);
         const iobuffer = new IOBuffer(buffer);
-        iobuffer.writeUint8(Protocol.RequestType.DISCARD);
+        iobuffer.writeUInt8(Protocol.RequestType.DISCARD);
         iobuffer.reset();
 
         return iobuffer;
