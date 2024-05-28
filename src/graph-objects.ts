@@ -38,7 +38,7 @@ export class DateTime {
     public readonly tzMin: number;
 
     private static _dateTimeRegex =
-        /^(\d+)-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|([+-]\d{2}):(\d{2}))$/;
+        /^(\d+)-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|([+-]\d{2}):(\d{2}))?$/;
 
     constructor(str: string) {
         const dateTimeMatch = str.match(DateTime._dateTimeRegex);
@@ -53,7 +53,8 @@ export class DateTime {
         this.hour = parseInt(dateTimeMatch[4]!);
         this.minute = parseInt(dateTimeMatch[5]!);
         this.second = parseInt(dateTimeMatch[6]!);
-        if (dateTimeMatch[7] === 'Z') {
+
+        if (!dateTimeMatch[7] || dateTimeMatch[7] === 'Z') {
             this.tzHour = 0;
             this.tzMin = 0;
         } else {
