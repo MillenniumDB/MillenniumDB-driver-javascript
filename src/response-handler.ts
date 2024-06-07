@@ -55,17 +55,17 @@ class ResponseHandler {
 
         switch (message.type) {
             case Protocol.ResponseType.SUCCESS: {
-                this._currentObserver!.onSuccess(message.payload);
+                this._currentObserver?.onSuccess(message.payload);
                 this._nextObserver();
                 break;
             }
             case Protocol.ResponseType.ERROR: {
-                this._currentObserver!.onError(message.payload);
+                this._currentObserver?.onError(message.payload);
                 this._nextObserver();
                 break;
             }
             case Protocol.ResponseType.RECORD: {
-                this._currentObserver!.onRecord(message.payload);
+                this._currentObserver?.onRecord(message.payload);
                 break;
             }
             default:

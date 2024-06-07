@@ -7,7 +7,7 @@ import MillenniumDBError from './millenniumdb-error';
  * Decode the incoming data from the server
  */
 class ChunkDecoder {
-    private static readonly _SEAL: number = 0x0000;
+    private static readonly _SEAL: number = 0x00_00;
 
     private _currentState: ChunkDecoder.State;
     private _currentChunkRemaining: number;

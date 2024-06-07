@@ -62,22 +62,40 @@ class WebSocketConnection {
     close(): Promise<void> {
         if (this._closingPromise === null) {
             this._closingPromise = new Promise((resolve, _) => {
-                if (this._ws.readyState !== 3) {
-                    // 3 === WebSocket.CLOSED
-                    this._open = false;
-                    this._ws.onclose = () => {
-                        this._wsOpen = false;
-                        resolve();
-                    };
-                    this._ws.close();
-                    return;
-                }
+                // Logically close the connection
+                this._open = false;
+                this._ws.onclose = () => {
+                    // The connection is truly closed
+                    this._wsOpen = false;
+                    resolve();
+                };
 
-                resolve();
+                switch (this._ws.readyState) {
+                    case 0: // CONNECTING
+                    case 1: // OPEN
+                        this._safeCloseWebSocket();
+                        break;
+                    default: // CLOSING & CLOSED
+                        resolve();
+                        break;
+                }
             });
         }
 
         return this._closingPromise;
+    }
+
+    private _safeCloseWebSocket(): void {
+        switch (this._ws.readyState) {
+            case 0: // CONNECTING
+                setTimeout(this._safeCloseWebSocket.bind(this), 1_000);
+                break;
+            case 1: // OPEN
+                this._ws.close();
+                break;
+            default: // CLOSING & CLOSED
+                break;
+        }
     }
 
     private _ensureOpen(): void {
