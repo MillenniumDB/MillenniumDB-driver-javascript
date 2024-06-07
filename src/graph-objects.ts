@@ -38,7 +38,7 @@ export class DateTime {
     public readonly tzMin: number;
 
     private static _dateTimeRegex =
-        /^(\d+)-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|([+-]\d{2}):(\d{2}))?$/;
+        /^(\d+)-(\d{2})-(\d{2})(T(\d{2}):(\d{2}):(\d{2})(Z|([+-]\d{2}):(\d{2}))?)?$/;
 
     constructor(str: string) {
         const dateTimeMatch = str.match(DateTime._dateTimeRegex);
@@ -50,16 +50,28 @@ export class DateTime {
         this.year = parseInt(dateTimeMatch[1]!);
         this.month = parseInt(dateTimeMatch[2]!);
         this.day = parseInt(dateTimeMatch[3]!);
-        this.hour = parseInt(dateTimeMatch[4]!);
-        this.minute = parseInt(dateTimeMatch[5]!);
-        this.second = parseInt(dateTimeMatch[6]!);
 
-        if (!dateTimeMatch[7] || dateTimeMatch[7] === 'Z') {
+        if (dateTimeMatch[4]) {
+            // Has time
+            this.hour = parseInt(dateTimeMatch[5]!);
+            this.minute = parseInt(dateTimeMatch[6]!);
+            this.second = parseInt(dateTimeMatch[7]!);
+            if (!dateTimeMatch[8] || dateTimeMatch[8] === 'Z') {
+                // No time zone
+                this.tzHour = 0;
+                this.tzMin = 0;
+            } else {
+                // Has time zone
+                this.tzHour = parseInt(dateTimeMatch[9]!);
+                this.tzMin = parseInt(dateTimeMatch[10]!);
+            }
+        } else {
+            // No time
+            this.hour = 0;
+            this.minute = 0;
+            this.second = 0;
             this.tzHour = 0;
             this.tzMin = 0;
-        } else {
-            this.tzHour = parseInt(dateTimeMatch[8]!);
-            this.tzMin = parseInt(dateTimeMatch[9]!);
         }
     }
 
@@ -73,10 +85,8 @@ export class DateTime {
         if (this.tzHour === 0 && this.tzMin === 0) {
             res += 'Z';
         } else {
-            if (this.tzHour > -1) {
-                res += '+';
-            }
-            res += this.tzHour.toString().padStart(2, '0') + ':';
+            res += this.tzHour < 0 ? '-' : '+';
+            res += Math.abs(this.tzHour).toString().padStart(2, '0') + ':';
             res += this.tzMin.toString().padStart(2, '0');
         }
         return res;
