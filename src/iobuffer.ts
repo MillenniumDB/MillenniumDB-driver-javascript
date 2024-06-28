@@ -40,10 +40,6 @@ class IOBuffer {
         return this.buffer.readUInt32BE(this._updateCurrentPosition(4));
     }
 
-    readUInt64(): bigint {
-        return this.buffer.readBigUInt64BE(this._updateCurrentPosition(8));
-    }
-
     readInt64(): bigint {
         return this.buffer.readBigInt64BE(this._updateCurrentPosition(8));
     }
