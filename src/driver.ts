@@ -1,6 +1,7 @@
-import Session, { SessionOptions, DEFAULT_SESSION_OPTIONS } from './session';
-import Protocol from './protocol';
+import Catalog from './catalog';
 import MillenniumDBError from './millenniumdb-error';
+import Protocol from './protocol';
+import Session, { DEFAULT_SESSION_OPTIONS, SessionOptions } from './session';
 
 /**
  * A driver that can hold multiple {@link Session}s with a remote MillenniumDB instance. The {@link Session}s have
@@ -21,6 +22,17 @@ class Driver {
         this._open = true;
         this._url = new URL(url);
         this._sessions = [];
+    }
+
+    async catalog(): Promise<Catalog> {
+        const session = this.session();
+        try {
+            return await session.catalog();
+        } catch (error) {
+            throw error;
+        } finally {
+            session.close();
+        }
     }
 
     /**

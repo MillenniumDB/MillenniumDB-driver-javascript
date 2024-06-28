@@ -1,3 +1,5 @@
+import Catalog from './catalog';
+import CatalogObserver from './catalog-observer';
 import ChunkDecoder from './chunk-decoder';
 import IOBuffer from './iobuffer';
 import MessageDecoder from './message-decoder';
@@ -53,6 +55,22 @@ class Session {
         );
     }
 
+    async catalog(): Promise<Catalog> {
+        this._ensureOpen();
+        const catalogObserver = new CatalogObserver();
+        this._send(RequestBuilder.catalog(), catalogObserver);
+        return new Promise((resolve, reject) => {
+            catalogObserver.subscribe({
+                onSuccess: (summary) => {
+                    resolve(new Catalog(summary));
+                },
+                onError: (error) => {
+                    reject(error);
+                },
+            });
+        });
+    }
+
     /**
      * Sends a request for executing a query to the server
      *
@@ -95,10 +113,10 @@ class Session {
      * Send a request to the server and attach an observer for its response
      *
      * @param iobuffer the data to send
-     * @param streamObserver the {@link StreamObserver} that will handle the received data
+     * @param observer that will handle the received data
      */
-    private _send(iobuffer: IOBuffer, streamObserver: StreamObserver): void {
-        this._responseHandler.addStreamObserver(streamObserver);
+    private _send(iobuffer: IOBuffer, observer: StreamObserver | CatalogObserver): void {
+        this._responseHandler.addObserver(observer);
         this._connection.write(iobuffer);
     }
 

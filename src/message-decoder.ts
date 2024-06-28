@@ -36,6 +36,9 @@ class MessageDecoder {
             case Protocol.DataType.UINT32: {
                 return iobuffer.readUInt32();
             }
+            case Protocol.DataType.UINT64: {
+                return iobuffer.readUInt64();
+            }
             case Protocol.DataType.INT64: {
                 return iobuffer.readInt64();
             }

@@ -55,6 +55,15 @@ class RequestBuilder {
 
         return iobuffer;
     }
+
+    static catalog(): IOBuffer {
+        const buffer = new ArrayBuffer(1);
+        const iobuffer = new IOBuffer(buffer);
+        iobuffer.writeUInt8(Protocol.RequestType.CATALOG);
+        iobuffer.reset();
+
+        return iobuffer;
+    }
 }
 
 export default RequestBuilder;

@@ -1,5 +1,5 @@
 import MillenniumDBError from './millenniumdb-error';
-import StreamObserver, { ResultObserver, Summary } from './stream-observer';
+import StreamObserver, { StreamResultObserver } from './stream-observer';
 import Record from './record';
 
 /**
@@ -8,7 +8,7 @@ import Record from './record';
 class Result {
     private readonly _streamObserver: StreamObserver;
     private _keys: Array<string> | null;
-    private _summary: Summary | null;
+    private _summary: any | null;
     private _error: MillenniumDBError | null;
     private _recordsPromise: Promise<Array<Record>> | null;
 
@@ -66,7 +66,7 @@ class Result {
      *
      * @returns a promise that resolves when the summary is received
      */
-    summary(): Promise<Summary> {
+    summary(): Promise<any> {
         // An error has already been thrown
         if (this._error !== null) {
             return Promise.reject(this._error);
@@ -90,9 +90,9 @@ class Result {
 
     /**
      *
-     * @param observer the {@link ResultObserver} that will handle the received data
+     * @param observer the {@link StreamResultObserver} that will handle the received data
      */
-    subscribe(observer: ResultObserver): void {
+    subscribe(observer: StreamResultObserver): void {
         this._wrapObserver(observer);
         this._streamObserver.subscribe(observer);
     }
@@ -122,10 +122,10 @@ class Result {
     /**
      * Wrap the observer in order to store relevant query information
      *
-     * @param observer the {@link ResultObserver} that will handle the received data
+     * @param observer the {@link StreamResultObserver} that will handle the received data
      * @returns the observer wrapped
      */
-    private _wrapObserver(observer: ResultObserver): ResultObserver {
+    private _wrapObserver(observer: StreamResultObserver): StreamResultObserver {
         return {
             onKeys: (keys) => {
                 this._keys = keys;

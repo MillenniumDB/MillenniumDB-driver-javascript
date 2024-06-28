@@ -20,7 +20,7 @@ import Record from './record';
 import ResponseHandler, { ResponseMessage } from './response-handler';
 import Result from './result';
 import Session, { SessionOptions } from './session';
-import StreamObserver, { ResultObserver, Summary } from './stream-observer';
+import StreamObserver, { StreamResultObserver } from './stream-observer';
 import { WebSocketType } from './websocket-client';
 import WebSocketConnection from './websocket-connection';
 
@@ -63,22 +63,21 @@ export type {
     GraphNode,
     GraphPath,
     GraphPathSegment,
-    IRI,
     IOBuffer,
+    IRI,
     MessageDecoder,
     MillenniumDBError,
     Record,
     ResponseHandler,
     ResponseMessage,
     Result,
-    ResultObserver,
+    StreamResultObserver as ResultObserver,
     Session,
     SessionOptions,
     SimpleDate,
     StreamObserver,
     StringDatatype,
     StringLang,
-    Summary,
     Time,
     WebSocketConnection,
     WebSocketType,
