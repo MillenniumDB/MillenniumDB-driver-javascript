@@ -1,4 +1,17 @@
-import { DateTime, Edge, Node, Path, PathSegment } from './graph-objects';
+import {
+    DateTime,
+    Decimal,
+    GraphAnon,
+    GraphEdge,
+    GraphNode,
+    GraphPath,
+    GraphPathSegment,
+    IRI,
+    SimpleDate,
+    StringDatatype,
+    StringLang,
+    Time,
+} from './graph-objects';
 import IOBuffer from './iobuffer';
 import MillenniumDBError from './millenniumdb-error';
 import Protocol from './protocol';
@@ -29,8 +42,29 @@ class MessageDecoder {
             case Protocol.DataType.FLOAT: {
                 return iobuffer.readFloat();
             }
+            case Protocol.DataType.DOUBLE: {
+                return iobuffer.readDouble();
+            }
+            case Protocol.DataType.DECIMAL: {
+                const decimalString = this._decodeString(iobuffer);
+                return new Decimal(decimalString);
+            }
             case Protocol.DataType.STRING: {
                 return this._decodeString(iobuffer);
+            }
+            case Protocol.DataType.STRING_LANG: {
+                const str = this._decodeString(iobuffer);
+                const lang = this._decodeString(iobuffer);
+                return new StringLang(str, lang);
+            }
+            case Protocol.DataType.STRING_DATATYPE: {
+                const str = this._decodeString(iobuffer);
+                const datatype = this._decodeString(iobuffer);
+                return new StringDatatype(str, datatype);
+            }
+            case Protocol.DataType.IRI: {
+                const iri = this._decodeString(iobuffer);
+                return new IRI(iri);
             }
             case Protocol.DataType.LIST: {
                 return this._decodeList(iobuffer);
@@ -39,39 +73,63 @@ class MessageDecoder {
                 return this._decodeMap(iobuffer);
             }
             case Protocol.DataType.NAMED_NODE: {
-                const nodeName = this._decodeString(iobuffer);
-                return new Node(nodeName);
+                const nodeId = this._decodeString(iobuffer);
+                return new GraphNode(nodeId);
             }
             case Protocol.DataType.EDGE: {
-                const edgeName = this._decodeString(iobuffer);
-                return new Edge(edgeName);
+                const edgeId = this._decodeString(iobuffer);
+                return new GraphEdge(edgeId);
+            }
+            case Protocol.DataType.ANON: {
+                const anonId = this._decodeString(iobuffer);
+                return new GraphAnon(anonId);
+            }
+            case Protocol.DataType.DATE: {
+                const year = Number(iobuffer.readInt64());
+                const month = Number(iobuffer.readUInt64());
+                const day = Number(iobuffer.readUInt64());
+                const tzMinuteOffset = Number(iobuffer.readUInt64());
+                return new SimpleDate(year, month, day, tzMinuteOffset);
+            }
+            case Protocol.DataType.TIME: {
+                const hour = Number(iobuffer.readUInt64());
+                const minute = Number(iobuffer.readUInt64());
+                const second = Number(iobuffer.readUInt64());
+                const tzMinuteOffset = Number(iobuffer.readUInt64());
+                return new Time(hour, minute, second, tzMinuteOffset);
             }
             case Protocol.DataType.DATETIME: {
-                const dateTimeString = this._decodeString(iobuffer);
-                return new DateTime(dateTimeString);
+                const year = Number(iobuffer.readInt64());
+                const month = Number(iobuffer.readUInt64());
+                const day = Number(iobuffer.readUInt64());
+                const hour = Number(iobuffer.readUInt64());
+                const minute = Number(iobuffer.readUInt64());
+                const second = Number(iobuffer.readUInt64());
+                const tzMinuteOffset = Number(iobuffer.readUInt64());
+                return new DateTime(year, month, day, hour, minute, second, tzMinuteOffset);
             }
             case Protocol.DataType.PATH: {
                 const pathLength = iobuffer.readUInt32();
 
                 if (pathLength === 0) {
                     const node = this.decode(iobuffer);
-                    return new Path(node, node, []);
+                    return new GraphPath(node, node, []);
                 }
 
-                const pathSegments: Array<PathSegment> = [];
+                const pathSegments: Array<GraphPathSegment> = [];
                 let reverse: boolean;
-                let start, end, from, to, type: Node;
+                let start, end, from, to, type: GraphNode;
                 from = this.decode(iobuffer);
                 start = from;
                 for (let i = 0; i < pathLength; ++i) {
                     reverse = this.decode(iobuffer);
                     type = this.decode(iobuffer);
                     to = this.decode(iobuffer);
-                    pathSegments.push(new PathSegment(from, to, type, reverse));
+                    pathSegments.push(new GraphPathSegment(from, to, type, reverse));
                     from = to;
                 }
                 end = from;
-                return new Path(start, end, pathSegments);
+                return new GraphPath(start, end, pathSegments);
             }
             default:
                 throw new MillenniumDBError(

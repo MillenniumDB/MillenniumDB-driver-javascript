@@ -1,6 +1,18 @@
 import ChunkDecoder from './chunk-decoder';
 import Driver from './driver';
-import { DateTime, Edge, Node, Path, PathSegment } from './graph-objects';
+import {
+    DateTime,
+    Decimal,
+    GraphEdge,
+    GraphNode,
+    GraphPath,
+    GraphPathSegment,
+    IRI,
+    SimpleDate,
+    StringDatatype,
+    StringLang,
+    Time,
+} from './graph-objects';
 import IOBuffer from './iobuffer';
 import MessageDecoder from './message-decoder';
 import MillenniumDBError from './millenniumdb-error';
@@ -23,13 +35,19 @@ const driver = (url: string): Driver => {
 };
 
 const types = {
-    Node,
-    Edge,
-    PathSegment,
-    Path,
+    DateTime,
+    Decimal,
+    GraphEdge,
+    GraphNode,
+    GraphPath,
+    GraphPathSegment,
+    IRI,
     Result,
     Record,
-    DateTime,
+    SimpleDate,
+    StringDatatype,
+    StringLang,
+    Time,
 };
 
 export default { driver };
@@ -39,14 +57,16 @@ export { driver, types };
 export type {
     ChunkDecoder,
     DateTime,
+    Decimal,
     Driver,
-    Edge,
+    GraphEdge,
+    GraphNode,
+    GraphPath,
+    GraphPathSegment,
+    IRI,
     IOBuffer,
     MessageDecoder,
     MillenniumDBError,
-    Node,
-    Path,
-    PathSegment,
     Record,
     ResponseHandler,
     ResponseMessage,
@@ -54,8 +74,12 @@ export type {
     ResultObserver,
     Session,
     SessionOptions,
+    SimpleDate,
     StreamObserver,
+    StringDatatype,
+    StringLang,
     Summary,
+    Time,
     WebSocketConnection,
     WebSocketType,
 };
