@@ -234,7 +234,7 @@ export class StringLang {
     }
 
     toString(): string {
-        return this.str + '@' + this.lang;
+        return `"${this.str}"@${this.lang}`;
     }
 }
 
@@ -250,6 +250,6 @@ export class StringDatatype {
     }
 
     toString(): string {
-        return this.str + '^^<' + this.datatype.toString() + '>';
+        return `"${this.str}"^^${this.datatype.toString()}`;
     }
 }
