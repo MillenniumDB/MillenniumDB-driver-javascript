@@ -1,31 +1,27 @@
 import Record from './record';
 import MillenniumDBError from './millenniumdb-error';
 
-export type Summary<Value = any> = {
-    [key: string]: Value;
-};
-
-export interface ResultObserver {
+export interface StreamResultObserver {
     /** Event handler triggered when keys are available. This should be the first event triggered during a query */
     onKeys?: (keys: Array<string>) => void;
     /** Event handler triggered when a record is available */
     onRecord?: (record: Record) => void;
     /** Event handler triggered after a successful execution */
-    onSuccess?: (summary: Summary) => void;
+    onSuccess?: (summary: any) => void;
     /** Event handler triggered when an error occurs */
     onError?: (error: MillenniumDBError) => void;
 }
 
 /**
- * StreamObserver handles the stream of data coming from the server
+ * StreamObserver handles the stream of data coming from the server. Used for queries
  */
 class StreamObserver {
     private _currentState: StreamObserver.State;
     private _keys: Array<string>;
     private _keyToIndex: { [key: string]: number };
     private _error: MillenniumDBError | null;
-    private _summary: Summary | null;
-    private _resultObservers: Array<ResultObserver>;
+    private _summary: any | null;
+    private _resultObservers: Array<StreamResultObserver>;
     private readonly _pendingRecords: Array<Record>;
     private readonly _fetchMore: () => void;
     private readonly _discardAll: () => void;
@@ -52,7 +48,7 @@ class StreamObserver {
         this._discardAll = () => discard(this);
     }
 
-    subscribe(resultObserver: ResultObserver): void {
+    subscribe(resultObserver: StreamResultObserver): void {
         // Emit pending data if any
         if (resultObserver.onKeys && this._keys.length > 0) {
             resultObserver.onKeys(this._keys);
@@ -87,7 +83,7 @@ class StreamObserver {
         }
     }
 
-    onSuccess(summary: Summary) {
+    onSuccess(summary: any) {
         switch (this._currentState) {
             case StreamObserver.State.WAITING_RUN_SUCCESS: {
                 this._currentState = StreamObserver.State.WAITING_PULL_OR_DISCARD_SUCCESS;

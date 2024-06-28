@@ -1,6 +1,13 @@
 namespace Protocol {
     export const DEFAULT_FETCH_SIZE: number = 1024;
 
+    export enum ModelId {
+        QUAD_MODEL_ID = 0,
+        RDF_MODEL_ID = 1,
+
+        TOTAL,
+    }
+
     export enum DataType {
         NULL_,
         BOOL_FALSE,
@@ -11,10 +18,17 @@ namespace Protocol {
         UINT64,
         INT64,
         FLOAT,
+        DOUBLE,
+        DECIMAL,
         STRING,
+        STRING_LANG,
+        STRING_DATATYPE,
+        IRI,
         NAMED_NODE,
         EDGE,
         ANON,
+        DATE,
+        TIME,
         DATETIME,
         PATH,
         LIST,
@@ -27,6 +41,7 @@ namespace Protocol {
         RUN,
         PULL,
         DISCARD,
+        CATALOG,
 
         TOTAL,
     }

@@ -52,6 +52,10 @@ class IOBuffer {
         return this.buffer.readFloatBE(this._updateCurrentPosition(4));
     }
 
+    readDouble(): number {
+        return this.buffer.readDoubleBE(this._updateCurrentPosition(8));
+    }
+
     readSlice(numBytes: number): IOBuffer {
         return new IOBuffer(
             this.buffer.subarray(this._updateCurrentPosition(numBytes), this._currentPosition)

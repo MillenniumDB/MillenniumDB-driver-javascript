@@ -1,3 +1,4 @@
+import CatalogObserver from './catalog-observer';
 import MillenniumDBError from './millenniumdb-error';
 import Protocol from './protocol';
 import StreamObserver from './stream-observer';
@@ -11,8 +12,8 @@ export interface ResponseMessage {
  * ResponseHandler handles the responses coming from the server
  */
 class ResponseHandler {
-    private _currentObserver: StreamObserver | null;
-    private readonly _pendingObservers: Array<StreamObserver>;
+    private _currentObserver: StreamObserver | CatalogObserver | null;
+    private readonly _pendingObservers: Array<StreamObserver | CatalogObserver>;
 
     constructor() {
         this._currentObserver = null;
@@ -79,15 +80,15 @@ class ResponseHandler {
     }
 
     /**
-     * Enqueue a new {@link StreamObserver} for handling a response
+     * Enqueue a new observer for handling a response
      *
-     * @param streamObserver the {@link StreamObserver} that will handle the received data
+     * @param observer that will handle the received data
      */
-    addStreamObserver(streamObserver: StreamObserver): void {
+    addObserver(observer: StreamObserver | CatalogObserver): void {
         if (this._currentObserver === null) {
-            this._currentObserver = streamObserver;
+            this._currentObserver = observer;
         } else {
-            this._pendingObservers.push(streamObserver);
+            this._pendingObservers.push(observer);
         }
     }
 

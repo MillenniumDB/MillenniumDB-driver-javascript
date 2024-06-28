@@ -1,6 +1,19 @@
+import Catalog from './catalog';
 import ChunkDecoder from './chunk-decoder';
 import Driver from './driver';
-import { DateTime, Edge, Node, Path, PathSegment } from './graph-objects';
+import {
+    DateTime,
+    Decimal,
+    GraphEdge,
+    GraphNode,
+    GraphPath,
+    GraphPathSegment,
+    IRI,
+    SimpleDate,
+    StringDatatype,
+    StringLang,
+    Time,
+} from './graph-objects';
 import IOBuffer from './iobuffer';
 import MessageDecoder from './message-decoder';
 import MillenniumDBError from './millenniumdb-error';
@@ -8,7 +21,7 @@ import Record from './record';
 import ResponseHandler, { ResponseMessage } from './response-handler';
 import Result from './result';
 import Session, { SessionOptions } from './session';
-import StreamObserver, { ResultObserver, Summary } from './stream-observer';
+import StreamObserver, { StreamResultObserver } from './stream-observer';
 import { WebSocketType } from './websocket-client';
 import WebSocketConnection from './websocket-connection';
 
@@ -23,13 +36,19 @@ const driver = (url: string): Driver => {
 };
 
 const types = {
-    Node,
-    Edge,
-    PathSegment,
-    Path,
+    DateTime,
+    Decimal,
+    GraphEdge,
+    GraphNode,
+    GraphPath,
+    GraphPathSegment,
+    IRI,
     Result,
     Record,
-    DateTime,
+    SimpleDate,
+    StringDatatype,
+    StringLang,
+    Time,
 };
 
 export default { driver };
@@ -37,25 +56,31 @@ export { driver, types };
 
 // Some types may be innecessary for the user, but I want to expose them in the documentation
 export type {
+    Catalog,
     ChunkDecoder,
     DateTime,
+    Decimal,
     Driver,
-    Edge,
+    GraphEdge,
+    GraphNode,
+    GraphPath,
+    GraphPathSegment,
     IOBuffer,
+    IRI,
     MessageDecoder,
     MillenniumDBError,
-    Node,
-    Path,
-    PathSegment,
     Record,
     ResponseHandler,
     ResponseMessage,
     Result,
-    ResultObserver,
+    StreamResultObserver as ResultObserver,
     Session,
     SessionOptions,
+    SimpleDate,
     StreamObserver,
-    Summary,
+    StringDatatype,
+    StringLang,
+    Time,
     WebSocketConnection,
     WebSocketType,
 };
