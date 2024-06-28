@@ -6,8 +6,8 @@ class Catalog {
     private readonly _version: number;
 
     constructor(summary: any) {
-        this._modelId = summary.modelId;
-        this._version = summary.version;
+        this._modelId = Number(summary.modelId);
+        this._version = Number(summary.version);
         this._validateModelId(this._modelId);
     }
 
