@@ -4,6 +4,7 @@ import Driver from './driver';
 import {
     DateTime,
     Decimal,
+    GraphAnon,
     GraphEdge,
     GraphNode,
     GraphPath,
@@ -38,6 +39,7 @@ const driver = (url: string): Driver => {
 const types = {
     DateTime,
     Decimal,
+    GraphAnon,
     GraphEdge,
     GraphNode,
     GraphPath,
@@ -61,6 +63,7 @@ export type {
     DateTime,
     Decimal,
     Driver,
+    GraphAnon,
     GraphEdge,
     GraphNode,
     GraphPath,
