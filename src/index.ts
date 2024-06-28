@@ -1,3 +1,4 @@
+import Catalog from './catalog';
 import ChunkDecoder from './chunk-decoder';
 import Driver from './driver';
 import {
@@ -55,6 +56,7 @@ export { driver, types };
 
 // Some types may be innecessary for the user, but I want to expose them in the documentation
 export type {
+    Catalog,
     ChunkDecoder,
     DateTime,
     Decimal,

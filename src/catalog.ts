@@ -11,6 +11,17 @@ class Catalog {
         this._validateModelId(this._modelId);
     }
 
+    public getModelString(): string {
+        switch (this._modelId) {
+            case Protocol.ModelId.QUAD_MODEL_ID:
+                return 'quad';
+            case Protocol.ModelId.RDF_MODEL_ID:
+                return 'rdf';
+            default:
+                throw new MillenniumDBError('Catalog Error: Invalid ModelId ' + this._modelId);
+        }
+    }
+
     public getModelId(): Protocol.ModelId {
         return this._modelId;
     }
