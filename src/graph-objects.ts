@@ -172,18 +172,18 @@ export class Decimal {
  */
 export class GraphPathSegment {
     /** The node from which the segment starts */
-    public readonly from: GraphNode;
+    public readonly from: any;
     /** The node to which the segment ends */
-    public readonly to: GraphNode;
+    public readonly to: any;
     /** The type of the segment */
-    public readonly type: GraphNode;
+    public readonly type: any;
     /**
      * Whether the segment is reversed, useful for printing a sequence of segments. If reverse is true,
      * the segment should be printed as `(to)<-[type]-(from)` instead of `(from)-[type]->(to)`
      */
     public readonly reverse: boolean;
 
-    constructor(from: GraphNode, to: GraphNode, type: GraphNode, reverse: boolean) {
+    constructor(from: any, to: any, type: any, reverse: boolean) {
         this.from = from;
         this.to = to;
         this.type = type;
@@ -193,15 +193,15 @@ export class GraphPathSegment {
 
 export class GraphPath {
     /** The start node of the path */
-    public readonly start: GraphNode;
+    public readonly start: any;
     /** The end node of the path */
-    public readonly end: GraphNode;
+    public readonly end: any;
     /** The segments in the path */
     public readonly segments: Array<GraphPathSegment>;
     /** The number of segments in the path */
     public readonly length: number;
 
-    constructor(start: GraphNode, end: GraphNode, segments: Array<GraphPathSegment>) {
+    constructor(start: any, end: any, segments: Array<GraphPathSegment>) {
         this.start = start;
         this.end = end;
         this.segments = segments;

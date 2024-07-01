@@ -121,7 +121,7 @@ class MessageDecoder {
 
                 const pathSegments: Array<GraphPathSegment> = [];
                 let reverse: boolean;
-                let start, end, from, to, type: GraphNode;
+                let start, end, from, to, type: any;
                 from = this.decode(iobuffer);
                 start = from;
                 for (let i = 0; i < pathLength; ++i) {
