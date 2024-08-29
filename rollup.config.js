@@ -39,7 +39,7 @@ const IIFE_MIN_CONFIG = {
         ...IIFE_CONFIG.output,
         file: `${OUTPUT_PREFIX}.min.js`,
     },
-    plugins: [...IIFE_CONFIG.plugins, MINIFIER],
+    plugins: [...IIFE_CONFIG.output.plugins, MINIFIER],
 };
 
 const ESM_MIN_CONFIG = {
@@ -48,7 +48,7 @@ const ESM_MIN_CONFIG = {
         ...ESM_CONFIG.output,
         file: `${OUTPUT_PREFIX}.esm.min.js`,
     },
-    plugins: [...ESM_CONFIG.plugins, MINIFIER],
+    plugins: [...ESM_CONFIG.output.plugins, MINIFIER],
 };
 
 export default [IIFE_CONFIG, ESM_CONFIG, IIFE_MIN_CONFIG, ESM_MIN_CONFIG];
