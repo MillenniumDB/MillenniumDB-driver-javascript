@@ -1,19 +1,28 @@
-import CatalogObserver from './catalog-observer';
 import MillenniumDBError from './millenniumdb-error';
 import Protocol from './protocol';
-import StreamObserver from './stream-observer';
 
 export interface ResponseMessage {
     type: number;
     payload: any;
 }
 
+export interface ResponseHandlerObserver {
+    /** Event handler triggered when variables are available. This should be the first event triggered during a query */
+    onVariables?: (variables: Array<string>) => void;
+    /** Event handler triggered when a record is available */
+    onRecord?: (record: Array<any>) => void;
+    /** Event handler triggered after a successful execution */
+    onSuccess?: (summary: any) => void;
+    /** Event handler triggered when an error occurs */
+    onError?: (error: MillenniumDBError) => void;
+}
+
 /**
  * ResponseHandler handles the responses coming from the server
  */
 class ResponseHandler {
-    private _currentObserver: StreamObserver | CatalogObserver | null;
-    private readonly _pendingObservers: Array<StreamObserver | CatalogObserver>;
+    private _currentObserver: ResponseHandlerObserver | null;
+    private readonly _pendingObservers: Array<ResponseHandlerObserver>;
 
     constructor() {
         this._currentObserver = null;
@@ -56,17 +65,21 @@ class ResponseHandler {
 
         switch (message.type) {
             case Protocol.ResponseType.SUCCESS: {
-                this._currentObserver?.onSuccess(message.payload);
+                this._currentObserver?.onSuccess?.(message.payload);
                 this._nextObserver();
                 break;
             }
             case Protocol.ResponseType.ERROR: {
-                this._currentObserver?.onError(message.payload);
+                this._currentObserver?.onError?.(message.payload);
                 this._nextObserver();
                 break;
             }
             case Protocol.ResponseType.RECORD: {
-                this._currentObserver?.onRecord(message.payload);
+                this._currentObserver?.onRecord?.(message.payload);
+                break;
+            }
+            case Protocol.ResponseType.VARIABLES: {
+                this._currentObserver?.onVariables?.(message.payload);
                 break;
             }
             default:
@@ -84,7 +97,7 @@ class ResponseHandler {
      *
      * @param observer that will handle the received data
      */
-    addObserver(observer: StreamObserver | CatalogObserver): void {
+    addObserver(observer: ResponseHandlerObserver): void {
         if (this._currentObserver === null) {
             this._currentObserver = observer;
         } else {
@@ -98,7 +111,7 @@ class ResponseHandler {
      * @param errorString the error to notify
      */
     triggerConnectionError(errorString: string): void {
-        this._currentObserver?.onError(errorString);
+        this._currentObserver?.onError?.(new MillenniumDBError(errorString));
         this._currentObserver = null;
         this._pendingObservers.length = 0;
     }

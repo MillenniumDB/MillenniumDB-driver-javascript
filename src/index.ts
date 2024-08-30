@@ -1,4 +1,5 @@
 import Catalog from './catalog';
+import CatalogObserver from './catalog-observer';
 import ChunkDecoder from './chunk-decoder';
 import Driver from './driver';
 import {
@@ -18,11 +19,11 @@ import {
 import IOBuffer from './iobuffer';
 import MessageDecoder from './message-decoder';
 import MillenniumDBError from './millenniumdb-error';
+import QueryObserver from './query-observer';
 import Record from './record';
 import ResponseHandler, { ResponseMessage } from './response-handler';
-import Result from './result';
-import Session, { SessionOptions } from './session';
-import StreamObserver, { StreamResultObserver } from './stream-observer';
+import Result, { ResultObserver } from './result';
+import Session from './session';
 import { WebSocketType } from './websocket-client';
 import WebSocketConnection from './websocket-connection';
 
@@ -57,33 +58,34 @@ export default { driver };
 export { driver, types };
 
 // Some types may be innecessary for the user, but I want to expose them in the documentation
-export type {
-    Catalog,
-    ChunkDecoder,
-    DateTime,
-    Decimal,
-    Driver,
-    GraphAnon,
-    GraphEdge,
-    GraphNode,
-    GraphPath,
-    GraphPathSegment,
-    IOBuffer,
-    IRI,
-    MessageDecoder,
-    MillenniumDBError,
-    Record,
-    ResponseHandler,
-    ResponseMessage,
-    Result,
-    StreamResultObserver as ResultObserver,
-    Session,
-    SessionOptions,
-    SimpleDate,
-    StreamObserver,
-    StringDatatype,
-    StringLang,
-    Time,
-    WebSocketConnection,
-    WebSocketType,
-};
+    export type {
+        Catalog,
+        CatalogObserver,
+        ChunkDecoder,
+        DateTime,
+        Decimal,
+        Driver,
+        GraphAnon,
+        GraphEdge,
+        GraphNode,
+        GraphPath,
+        GraphPathSegment,
+        IOBuffer,
+        IRI,
+        MessageDecoder,
+        MillenniumDBError,
+        QueryObserver,
+        Record,
+        ResponseHandler,
+        ResponseMessage,
+        Result,
+        ResultObserver,
+        Session,
+        SimpleDate,
+        StringDatatype,
+        StringLang,
+        Time,
+        WebSocketConnection,
+        WebSocketType
+    };
+

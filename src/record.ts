@@ -9,28 +9,32 @@ type RecordShape<Value = any> = {
  */
 class Record {
     public readonly length: number;
-    private readonly _keys: Array<string>;
+    private readonly _variables: Array<string>;
     private readonly _values: Array<any>;
-    private readonly _keyToIndex: { [key: string]: number };
+    private readonly _variableToIndex: { [variable: string]: number };
 
     /**
      * This constructor should not be called directly
      *
-     * @param keys the keys of the query
+     * @param variables the variables of the query
      * @param values the values of the record
-     * @param keyToIndex a map from key to index
+     * @param variableToIndex a map from variable to index
      */
-    constructor(keys: Array<string>, values: Array<any>, keyToIndex: { [key: string]: number }) {
-        if (keys.length !== values.length) {
+    constructor(
+        variables: Array<string>,
+        values: Array<any>,
+        variableToIndex: { [key: string]: number }
+    ) {
+        if (variables.length !== values.length) {
             throw new MillenniumDBError(
                 'Record Error: Number of variables does not match the number of values'
             );
         }
 
-        this._keys = keys;
+        this._variables = variables;
         this._values = values;
-        this._keyToIndex = keyToIndex;
-        this.length = keys.length;
+        this._variableToIndex = variableToIndex;
+        this.length = variables.length;
     }
 
     /**
@@ -40,7 +44,7 @@ class Record {
      */
     *entries(): IterableIterator<[string, any]> {
         for (let i = 0; i < this.length; ++i) {
-            yield [this._keys[i]!, this._values[i]];
+            yield [this._variables[i]!, this._values[i]];
         }
     }
 
@@ -67,11 +71,11 @@ class Record {
     /**
      * Get the value associated with the key in the record
      *
-     * @param key the variable name or its index emmited by the onKeys event
+     * @param key the variable name or its index emmited by the onVariables event
      * @returns the value associated with the key
      */
     get(key: number | string): any {
-        const index: number = typeof key === 'number' ? key : this._keyToIndex[key] ?? -1;
+        const index: number = typeof key === 'number' ? key : this._variableToIndex[key] ?? -1;
         if (index > this.length - 1 || index < 0) {
             throw new MillenniumDBError('Record Error: Index ' + index + ' is out of bounds');
         }
@@ -82,11 +86,11 @@ class Record {
     /**
      * Check if the record has a value associated with the key
      *
-     * @param key the variable name or its index emmited by the onKeys event
+     * @param key the variable name or its index emmited by the onVariables event
      * @returns true if the record has a value associated with the key
      */
     has(key: number | string): boolean {
-        const index: number = typeof key == 'number' ? key : this._keys.indexOf(key);
+        const index: number = typeof key == 'number' ? key : this._variables.indexOf(key);
         return index < this.length && index > -1;
     }
 
@@ -98,7 +102,7 @@ class Record {
     toObject(): Object {
         const res: RecordShape = {};
         for (let i = 0; i < this.length; ++i) {
-            res[this._keys[i]!] = this._values[i];
+            res[this._variables[i]!] = this._values[i];
         }
         return res;
     }

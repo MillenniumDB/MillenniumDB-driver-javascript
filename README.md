@@ -98,15 +98,15 @@ The alternatives for consuming results must never be mixed because it would gene
 
 This is the preferred way to consume the results, as it is the only that does not hold all the results in memory, it just streams it to an observer object provided by the user. The observer must implement the following methods:
 
-* `onKeys`: First event trigerred, just once. It will return the column names of the query.
+* `onVariables`: First event trigerred, just once. It will return the variable names of the query.
 * `onRecord`: Subsequent events triggered for each record available in the query result. It will return a `Record` object.
 * `onSuccess`: Trigerred at the end of the query execution. It will return a summary for the query. No more events are triggered afterwards.
-* `onError`: Trigerred if an error occurs during the query execution. It will return an error. No more events are triggered afterwards. This could even happen before receiving the `onKeys` event.
+* `onError`: Trigerred if an error occurs during the query execution. It will return an error. No more events are triggered afterwards. This could even happen before receiving the `onVariables` event.
 
 ```js
 result.subscribe({
-  onKeys: (keys) => {
-    console.log('The columns are:', keys);
+  onVariables: (variables) => {
+    console.log('The variables are:', variables);
   },
   onRecord: (record) => {
     // Do something with each record
@@ -125,7 +125,7 @@ result.subscribe({
 ### Promise-based API with async/await syntax
 
 ```js
-const keys = await result.keys();
+const variables = await result.variables();
 const records = await result.records();
 const summary = await result.summary();
 ```
@@ -135,8 +135,8 @@ const summary = await result.summary();
 ```js
 // catch/finally are ommited for brevity
 
-result.keys().then((keys) => {
-    console.log('The columns are:', keys);
+result.variables().then((variables) => {
+    console.log('The variables are:', variables);
 });
 
 result.records().then((records) => {
