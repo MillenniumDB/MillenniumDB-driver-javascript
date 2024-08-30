@@ -30,32 +30,6 @@ class RequestBuilder {
         return iobuffer;
     }
 
-    /**
-     * Builds a request to pull records from the server
-     *
-     * @param numRecords the number of records to pull
-     * @returns th encoded request
-     */
-    static pull(numRecords: number): IOBuffer {
-        const buffer = new ArrayBuffer(6);
-        const iobuffer = new IOBuffer(buffer);
-        iobuffer.writeUInt8(Protocol.RequestType.PULL);
-        iobuffer.writeUInt8(Protocol.DataType.UINT32);
-        iobuffer.writeUInt32(numRecords);
-        iobuffer.reset();
-
-        return iobuffer;
-    }
-
-    static discard(): IOBuffer {
-        const buffer = new ArrayBuffer(1);
-        const iobuffer = new IOBuffer(buffer);
-        iobuffer.writeUInt8(Protocol.RequestType.DISCARD);
-        iobuffer.reset();
-
-        return iobuffer;
-    }
-
     static catalog(): IOBuffer {
         const buffer = new ArrayBuffer(1);
         const iobuffer = new IOBuffer(buffer);

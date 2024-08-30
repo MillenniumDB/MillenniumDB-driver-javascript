@@ -1,13 +1,24 @@
 import MillenniumDBError from './millenniumdb-error';
-import StreamObserver, { StreamResultObserver } from './stream-observer';
+import QueryObserver from './query-observer';
 import Record from './record';
+
+export interface ResultObserver {
+    /** Event handler triggered when variables are available. This should be the first event triggered during a query */
+    onVariables?: (variables: Array<string>) => void;
+    /** Event handler triggered when a record is available */
+    onRecord?: (record: Record) => void;
+    /** Event handler triggered after a successful execution */
+    onSuccess?: (summary: any) => void;
+    /** Event handler triggered when an error occurs */
+    onError?: (error: MillenniumDBError) => void;
+}
 
 /**
  * Result represents the result of a query
  */
 class Result {
-    private readonly _streamObserver: StreamObserver;
-    private _keys: Array<string> | null;
+    private readonly _queryObserver: QueryObserver;
+    private _variables: Array<string> | null;
     private _summary: any | null;
     private _error: MillenniumDBError | null;
     private _recordsPromise: Promise<Array<Record>> | null;
@@ -15,37 +26,37 @@ class Result {
     /**
      * This constructor should never be called directly
      *
-     * @param streamObserver the {@link StreamObserver} that will handle the received data
+     * @param queryObserver the {@link QueryObserver} that will handle the received data
      */
-    constructor(streamObserver: StreamObserver) {
-        this._streamObserver = streamObserver;
-        this._keys = null;
+    constructor(queryObserver: QueryObserver) {
+        this._queryObserver = queryObserver;
+        this._variables = null;
         this._summary = null;
         this._error = null;
         this._recordsPromise = null;
     }
 
     /**
-     * Get the keys associated with the result
+     * Get the variables associated with the result
      *
-     * @returns a promise that resolves when the keys are received
+     * @returns a promise that resolves when the variables are received
      */
-    keys(): Promise<Array<string>> {
+    variables(): Promise<Array<string>> {
         // An error has already been thrown
         if (this._error !== null) {
             return Promise.reject(this._error);
         }
 
-        // The keys have already been received
-        if (this._keys !== null) {
-            return Promise.resolve(this._keys);
+        // The variables have already been received
+        if (this._variables !== null) {
+            return Promise.resolve(this._variables);
         }
 
-        // Wait for the keys to be received
+        // Wait for the variables to be received
         return new Promise((resolve, reject) => {
-            this._streamObserver.subscribe(
+            this._queryObserver.subscribe(
                 this._wrapObserver({
-                    onKeys: (keys) => resolve(keys),
+                    onVariables: (variables) => resolve(variables),
                     onError: (error) => reject(error),
                 })
             );
@@ -79,7 +90,7 @@ class Result {
 
         // Wait for the summary to be received
         return new Promise((resolve, reject) => {
-            this._streamObserver.subscribe(
+            this._queryObserver.subscribe(
                 this._wrapObserver({
                     onSuccess: (summary) => resolve(summary),
                     onError: (error) => reject(error),
@@ -90,25 +101,17 @@ class Result {
 
     /**
      *
-     * @param observer the {@link StreamResultObserver} that will handle the received data
+     * @param observer the {@link ResultObserver} that will handle the received data
      */
-    subscribe(observer: StreamResultObserver): void {
-        this._wrapObserver(observer);
-        this._streamObserver.subscribe(observer);
-    }
-
-    /**
-     * Cancel the query execution
-     */
-    cancel(): void {
-        this._streamObserver.cancel();
+    subscribe(observer: ResultObserver): void {
+        this._queryObserver.subscribe(this._wrapObserver(observer));
     }
 
     private _getRecordsPromise(): Promise<Array<Record>> {
         if (this._recordsPromise === null) {
             this._recordsPromise = new Promise((resolve, reject) => {
                 const records: Array<Record> = [];
-                this._streamObserver.subscribe({
+                this._queryObserver.subscribe({
                     onRecord: (record) => records.push(record),
                     onSuccess: () => resolve(records),
                     onError: (error) => reject(error),
@@ -122,14 +125,14 @@ class Result {
     /**
      * Wrap the observer in order to store relevant query information
      *
-     * @param observer the {@link StreamResultObserver} that will handle the received data
+     * @param observer the {@link ResultObserver} that will handle the received data
      * @returns the observer wrapped
      */
-    private _wrapObserver(observer: StreamResultObserver): StreamResultObserver {
+    private _wrapObserver(observer: ResultObserver): ResultObserver {
         return {
-            onKeys: (keys) => {
-                this._keys = keys;
-                observer.onKeys?.(keys);
+            onVariables: (variables) => {
+                this._variables = variables;
+                observer.onVariables?.(variables);
             },
             onRecord: observer.onRecord,
             onSuccess: (summary) => {

@@ -1,7 +1,6 @@
 import Catalog from './catalog';
 import MillenniumDBError from './millenniumdb-error';
-import Protocol from './protocol';
-import Session, { DEFAULT_SESSION_OPTIONS, SessionOptions } from './session';
+import Session from './session';
 
 /**
  * A driver that can hold multiple {@link Session}s with a remote MillenniumDB instance. The {@link Session}s have
@@ -24,6 +23,11 @@ class Driver {
         this._sessions = [];
     }
 
+    /**
+     * Get the {@link Catalog} of the remote MillenniumDB instance
+     *
+     * @returns Promise that will be resolved with the {@link Catalog}
+     */
     async catalog(): Promise<Catalog> {
         const session = this.session();
         try {
@@ -42,10 +46,9 @@ class Driver {
      * @param options the options for the {@link Session}
      * @returns a new {@link Session} instance
      */
-    session(options: SessionOptions = DEFAULT_SESSION_OPTIONS): Session {
+    session(): Session {
         this._ensureOpen();
-        validateSessionOptions(options);
-        const session = new Session(this._url, options);
+        const session = new Session(this._url);
         this._sessions.push(session);
         return session;
     }
@@ -67,34 +70,6 @@ class Driver {
         if (!this._open) {
             throw new MillenniumDBError('Driver Error: driver is closed');
         }
-    }
-}
-
-/**
- * Validate the options for {@link Session} if any throwing errors if necessary. If no options are
- * provided, default values will be used.
- *
- * @param options the options for the {@link Session}
- */
-function validateSessionOptions(options: SessionOptions): void {
-    checkIsNonNegativeNumber(options.fetchSize ?? Protocol.DEFAULT_FETCH_SIZE, 'fetchSize');
-}
-
-/**
- * Helper function that throws a {@link MillenniumDBError} when the value is not a non-negative number
- *
- * @param value the value to check
- * @param variableName the variable name for the error
- */
-function checkIsNonNegativeNumber(value: number, variableName: string): void {
-    if (typeof value !== 'number') {
-        throw new MillenniumDBError(
-            'Driver Error: ' + variableName + ' must be a number, but got ' + typeof value
-        );
-    }
-
-    if (value < 0) {
-        throw new MillenniumDBError('Driver Error: ' + variableName + ' must be non-negative');
     }
 }
 

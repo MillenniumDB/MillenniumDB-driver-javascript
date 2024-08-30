@@ -250,6 +250,6 @@ export class StringDatatype {
     }
 
     toString(): string {
-        return `"${this.str}"^^${this.datatype.toString()}`;
+        return `"${this.str}"^^<${this.datatype.toString()}>`;
     }
 }

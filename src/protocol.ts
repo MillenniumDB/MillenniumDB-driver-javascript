@@ -39,8 +39,6 @@ namespace Protocol {
 
     export enum RequestType {
         RUN,
-        PULL,
-        DISCARD,
         CATALOG,
 
         TOTAL,
@@ -50,6 +48,7 @@ namespace Protocol {
         SUCCESS,
         ERROR,
         RECORD,
+        VARIABLES,
 
         TOTAL,
     }

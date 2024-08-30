@@ -4,32 +4,17 @@ import ChunkDecoder from './chunk-decoder';
 import IOBuffer from './iobuffer';
 import MessageDecoder from './message-decoder';
 import MillenniumDBError from './millenniumdb-error';
-import Protocol from './protocol';
+import QueryObserver from './query-observer';
 import RequestBuilder from './request-builder';
-import ResponseHandler, { ResponseMessage } from './response-handler';
+import ResponseHandler, { ResponseHandlerObserver, ResponseMessage } from './response-handler';
 import Result from './result';
-import StreamObserver from './stream-observer';
 import WebSocketConnection from './websocket-connection';
-
-/**
- * Options for {@link Driver.session}
- */
-export interface SessionOptions {
-    /** The number of records to fetch at a time from the server */
-    fetchSize: number;
-}
-
-export const DEFAULT_SESSION_OPTIONS: SessionOptions = {
-    fetchSize: Protocol.DEFAULT_FETCH_SIZE,
-};
 
 /**
  * A Session is used to send queries and receive results from the remote MillenniumDB instance
  */
 class Session {
     private _open: boolean;
-    private readonly _results: Array<Result>;
-    private readonly _options: SessionOptions;
     private readonly _connection: WebSocketConnection;
     private readonly _chunkDecoder: ChunkDecoder;
     private readonly _messageDecoder: MessageDecoder;
@@ -41,10 +26,8 @@ class Session {
      * @param url the URL for the MillenniumDB server
      * @param options the options for the {@link Session}
      */
-    constructor(url: URL, options: SessionOptions) {
+    constructor(url: URL) {
         this._open = true;
-        this._results = [];
-        this._options = options;
         this._chunkDecoder = new ChunkDecoder(this._onChunksDecoded);
         this._messageDecoder = new MessageDecoder();
         this._responseHandler = new ResponseHandler();
@@ -79,26 +62,15 @@ class Session {
      */
     run(query: string): Result {
         this._ensureOpen();
-        const streamObserver = new StreamObserver(
-            this._fetchMore.bind(this),
-            this._discardAll.bind(this)
-        );
+        const queryObserver = new QueryObserver();
+        this._send(RequestBuilder.run(query), queryObserver);
 
-        this._send(RequestBuilder.run(query), streamObserver);
-
-        const result = new Result(streamObserver);
-        this._results.push(result);
-        return result;
+        return new Result(queryObserver);
     }
 
     async close(): Promise<void> {
         if (this._open) {
             this._open = false;
-
-            for (const result of this._results) {
-                result.cancel();
-            }
-
             await this._connection.close();
         }
     }
@@ -115,22 +87,9 @@ class Session {
      * @param iobuffer the data to send
      * @param observer that will handle the received data
      */
-    private _send(iobuffer: IOBuffer, observer: StreamObserver | CatalogObserver): void {
+    private _send(iobuffer: IOBuffer, observer: ResponseHandlerObserver): void {
         this._responseHandler.addObserver(observer);
         this._connection.write(iobuffer);
-    }
-
-    /**
-     * Send a request that asks for more records from the server
-     *
-     * @param streamObserver the {@link StreamObserver} that will handle the received data
-     */
-    private _fetchMore(streamObserver: StreamObserver): void {
-        this._send(RequestBuilder.pull(this._options.fetchSize), streamObserver);
-    }
-
-    private _discardAll(streamObserver: StreamObserver): void {
-        this._send(RequestBuilder.discard(), streamObserver);
     }
 
     /**
