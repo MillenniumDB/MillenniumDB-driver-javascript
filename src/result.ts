@@ -107,6 +107,10 @@ class Result {
         this._queryObserver.subscribe(this._wrapObserver(observer));
     }
 
+    unsubscribe(): void {
+        this._queryObserver.unsubscribe();
+    }
+
     private _getRecordsPromise(): Promise<Array<Record>> {
         if (this._recordsPromise === null) {
             this._recordsPromise = new Promise((resolve, reject) => {

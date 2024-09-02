@@ -19,6 +19,7 @@ class Session {
     private readonly _chunkDecoder: ChunkDecoder;
     private readonly _messageDecoder: MessageDecoder;
     private readonly _responseHandler: ResponseHandler;
+    private readonly _results: Array<Result>;
 
     /**
      * This constructor should never be called directly
@@ -31,6 +32,7 @@ class Session {
         this._chunkDecoder = new ChunkDecoder(this._onChunksDecoded);
         this._messageDecoder = new MessageDecoder();
         this._responseHandler = new ResponseHandler();
+        this._results = [];
         this._connection = new WebSocketConnection(
             url,
             this._onServerMessage.bind(this),
@@ -65,12 +67,17 @@ class Session {
         const queryObserver = new QueryObserver();
         this._send(RequestBuilder.run(query), queryObserver);
 
-        return new Result(queryObserver);
+        const result = new Result(queryObserver);
+        this._results.push(result);
+        return result;
     }
 
     async close(): Promise<void> {
         if (this._open) {
             this._open = false;
+            for (const result of this._results) {
+                result.unsubscribe();
+            }
             await this._connection.close();
         }
     }
