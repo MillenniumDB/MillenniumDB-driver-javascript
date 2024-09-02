@@ -80,6 +80,11 @@ class QueryObserver implements ResponseHandlerObserver {
 
         this._resultObserver = resultObserver;
     }
+
+    unsubscribe() {
+        // Stop emitting data
+        this._resultObserver = null;
+    }
 }
 
 export default QueryObserver;
