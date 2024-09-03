@@ -5,7 +5,7 @@ import { QueryPreamble } from './response-handler';
 
 export interface ResultObserver {
     /** Event handler triggered when variables are available. This should be the first event triggered during a query */
-    onVariables?: (variables: Array<string>, queryPreamble: QueryPreamble) => void;
+    onVariables?: (variables: Array<string>, queryPreamble?: QueryPreamble) => void;
     /** Event handler triggered when a record is available */
     onRecord?: (record: Record) => void;
     /** Event handler triggered after a successful execution */
@@ -139,8 +139,8 @@ class Result {
         return {
             onVariables: (variables, queryPreamble) => {
                 this._variables = variables;
-                this._queryPreamble = queryPreamble;
-                observer.onVariables?.(variables, queryPreamble);
+                this._queryPreamble = queryPreamble!;
+                observer.onVariables?.(variables);
             },
             onRecord: observer.onRecord,
             onSuccess: (summary) => {
