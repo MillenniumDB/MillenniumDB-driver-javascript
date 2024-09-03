@@ -40,6 +40,7 @@ namespace Protocol {
     export enum RequestType {
         RUN,
         CATALOG,
+        CANCEL,
 
         TOTAL,
     }
@@ -49,6 +50,7 @@ namespace Protocol {
         ERROR,
         RECORD,
         VARIABLES,
+        QUERY_DATA,
 
         TOTAL,
     }

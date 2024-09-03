@@ -6,9 +6,14 @@ export interface ResponseMessage {
     payload: any;
 }
 
+export interface QueryPreamble {
+    workerIndex: number;
+    cancellationToken: string;
+}
+
 export interface ResponseHandlerObserver {
     /** Event handler triggered when variables are available. This should be the first event triggered during a query */
-    onVariables?: (variables: Array<string>) => void;
+    onVariables?: (variables: Array<string>, queryPreamble: QueryPreamble) => void;
     /** Event handler triggered when a record is available */
     onRecord?: (record: Array<any>) => void;
     /** Event handler triggered after a successful execution */
@@ -79,7 +84,8 @@ class ResponseHandler {
                 break;
             }
             case Protocol.ResponseType.VARIABLES: {
-                this._currentObserver?.onVariables?.(message.payload);
+                const { variables, queryPreamble } = message.payload;
+                this._currentObserver?.onVariables?.(variables, queryPreamble);
                 break;
             }
             default:

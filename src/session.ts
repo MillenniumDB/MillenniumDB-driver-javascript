@@ -1,3 +1,4 @@
+import CancelObserver from './cancel-observer';
 import Catalog from './catalog';
 import CatalogObserver from './catalog-observer';
 import ChunkDecoder from './chunk-decoder';
@@ -40,6 +41,11 @@ class Session {
         );
     }
 
+    /**
+     * Get the {@link Catalog} of the remote MillenniumDB instance
+     *
+     * @returns Promise that will be resolved with the {@link Catalog}
+     */
     async catalog(): Promise<Catalog> {
         this._ensureOpen();
         const catalogObserver = new CatalogObserver();
@@ -80,6 +86,36 @@ class Session {
             }
             await this._connection.close();
         }
+    }
+
+    /**
+     * Try to cancel another query given a {@link Result}. This method should be called exclusively by driver
+     *
+     * @param result the {@link Result} to cancel
+     * @returns a promise that resolves when the query is cancelled
+     */
+    async _cancel(result: Result): Promise<void> {
+        this._ensureOpen();
+
+        if (!result._queryPreamble) {
+            return Promise.reject(
+                new MillenniumDBError('Session Error: query has not been executed yet')
+            );
+        }
+
+        const cancelObserver = new CancelObserver();
+        const { workerIndex, cancellationToken } = result._queryPreamble!;
+        this._send(RequestBuilder.cancel(workerIndex, cancellationToken), cancelObserver);
+        return new Promise((resolve, reject) => {
+            cancelObserver.subscribe({
+                onSuccess: () => {
+                    resolve();
+                },
+                onError: (error) => {
+                    reject(error);
+                },
+            });
+        });
     }
 
     private _ensureOpen(): void {

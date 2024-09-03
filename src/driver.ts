@@ -1,5 +1,6 @@
 import Catalog from './catalog';
 import MillenniumDBError from './millenniumdb-error';
+import Result from './result';
 import Session from './session';
 
 /**
@@ -32,6 +33,23 @@ class Driver {
         const session = this.session();
         try {
             return await session.catalog();
+        } catch (error) {
+            throw error;
+        } finally {
+            session.close();
+        }
+    }
+
+    /**
+     * Cancel the execution of a currently running query. Internally this will create a temporary {@link Session}
+     * that will be closed after the query has been cancelled.
+     *
+     * @param result the {@link Result} to cancel
+     */
+    async cancel(result: Result): Promise<void> {
+        const session = this.session();
+        try {
+            return await session._cancel(result);
         } catch (error) {
             throw error;
         } finally {

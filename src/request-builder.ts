@@ -38,6 +38,22 @@ class RequestBuilder {
 
         return iobuffer;
     }
+
+    static cancel(workerIndex: number, cancellationToken: string): IOBuffer {
+        const cancellationTokenBytes = RequestBuilder.encodeString(cancellationToken);
+        const cancellationTokenBytesLength = cancellationTokenBytes.byteLength;
+        const buffer = new ArrayBuffer(11 + cancellationTokenBytesLength);
+        const iobuffer = new IOBuffer(buffer);
+        iobuffer.writeUInt8(Protocol.RequestType.CANCEL);
+        iobuffer.writeUInt8(Protocol.DataType.UINT32);
+        iobuffer.writeUInt32(workerIndex);
+        iobuffer.writeUInt8(Protocol.DataType.STRING);
+        iobuffer.writeUInt32(cancellationTokenBytesLength);
+        iobuffer.writeBytes(cancellationTokenBytes);
+        iobuffer.reset();
+
+        return iobuffer;
+    }
 }
 
 export default RequestBuilder;

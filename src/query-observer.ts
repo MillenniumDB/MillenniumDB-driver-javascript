@@ -1,6 +1,6 @@
 import Record from './record';
 import MillenniumDBError from './millenniumdb-error';
-import { ResponseHandlerObserver } from './response-handler';
+import { ResponseHandlerObserver, QueryPreamble } from './response-handler';
 import { ResultObserver } from './result';
 
 /**
@@ -8,6 +8,7 @@ import { ResultObserver } from './result';
  */
 class QueryObserver implements ResponseHandlerObserver {
     private _variables: Array<string>;
+    private _queryPreamble: QueryPreamble | null;
     private _variableToIndex: { [key: string]: number };
     private _error: MillenniumDBError | null;
     private _summary: any | null;
@@ -20,6 +21,7 @@ class QueryObserver implements ResponseHandlerObserver {
         // When triggering the onVariables event, this._variables must be cloned as the user might modify it and they are
         // necessary for class the Record class constructor
         this._variables = [];
+        this._queryPreamble = null;
         this._variableToIndex = {};
         this._error = null;
         this._summary = null;
@@ -27,14 +29,15 @@ class QueryObserver implements ResponseHandlerObserver {
         this._pendingRecords = [];
     }
 
-    onVariables(variables: Array<string>) {
+    onVariables(variables: Array<string>, queryPreamble: QueryPreamble) {
         this._variables = variables;
+        this._queryPreamble = queryPreamble;
 
         for (let i = 0; i < this._variables.length; ++i) {
             this._variableToIndex[this._variables[i]!] = i;
         }
 
-        this._resultObserver?.onVariables?.(this._variables);
+        this._resultObserver?.onVariables?.(this._variables, this._queryPreamble);
     }
 
     onRecord(values: Array<any>) {
@@ -59,8 +62,8 @@ class QueryObserver implements ResponseHandlerObserver {
 
     subscribe(resultObserver: ResultObserver) {
         // Emit pending data if any
-        if (this._variables.length > 0) {
-            resultObserver.onVariables?.(this._variables);
+        if (this._variables.length > 0 && this._queryPreamble) {
+            resultObserver.onVariables?.(this._variables, this._queryPreamble);
         }
 
         if (this._pendingRecords.length > 0) {

@@ -1,10 +1,11 @@
 import MillenniumDBError from './millenniumdb-error';
 import QueryObserver from './query-observer';
 import Record from './record';
+import { QueryPreamble } from './response-handler';
 
 export interface ResultObserver {
     /** Event handler triggered when variables are available. This should be the first event triggered during a query */
-    onVariables?: (variables: Array<string>) => void;
+    onVariables?: (variables: Array<string>, queryPreamble: QueryPreamble) => void;
     /** Event handler triggered when a record is available */
     onRecord?: (record: Record) => void;
     /** Event handler triggered after a successful execution */
@@ -17,6 +18,7 @@ export interface ResultObserver {
  * Result represents the result of a query
  */
 class Result {
+    public _queryPreamble: QueryPreamble | null;
     private readonly _queryObserver: QueryObserver;
     private _variables: Array<string> | null;
     private _summary: any | null;
@@ -29,6 +31,7 @@ class Result {
      * @param queryObserver the {@link QueryObserver} that will handle the received data
      */
     constructor(queryObserver: QueryObserver) {
+        this._queryPreamble = null;
         this._queryObserver = queryObserver;
         this._variables = null;
         this._summary = null;
@@ -134,9 +137,10 @@ class Result {
      */
     private _wrapObserver(observer: ResultObserver): ResultObserver {
         return {
-            onVariables: (variables) => {
+            onVariables: (variables, queryPreamble) => {
                 this._variables = variables;
-                observer.onVariables?.(variables);
+                this._queryPreamble = queryPreamble;
+                observer.onVariables?.(variables, queryPreamble);
             },
             onRecord: observer.onRecord,
             onSuccess: (summary) => {
