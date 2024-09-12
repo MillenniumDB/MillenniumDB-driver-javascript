@@ -88,27 +88,27 @@ class MessageDecoder {
                 return new GraphAnon(anonId);
             }
             case Protocol.DataType.DATE: {
-                const year = Number(this.decode(iobuffer));
-                const month = Number(this.decode(iobuffer));
-                const day = Number(this.decode(iobuffer));
-                const tzMinuteOffset = Number(this.decode(iobuffer));
+                const year = Number(iobuffer.readInt64());
+                const month = Number(iobuffer.readInt64());
+                const day = Number(iobuffer.readInt64());
+                const tzMinuteOffset = Number(iobuffer.readInt64());
                 return new SimpleDate(year, month, day, tzMinuteOffset);
             }
             case Protocol.DataType.TIME: {
-                const hour = Number(this.decode(iobuffer));
-                const minute = Number(this.decode(iobuffer));
-                const second = Number(this.decode(iobuffer));
-                const tzMinuteOffset = Number(this.decode(iobuffer));
+                const hour = Number(iobuffer.readInt64());
+                const minute = Number(iobuffer.readInt64());
+                const second = Number(iobuffer.readInt64());
+                const tzMinuteOffset = Number(iobuffer.readInt64());
                 return new Time(hour, minute, second, tzMinuteOffset);
             }
             case Protocol.DataType.DATETIME: {
-                const year = Number(this.decode(iobuffer));
-                const month = Number(this.decode(iobuffer));
-                const day = Number(this.decode(iobuffer));
-                const hour = Number(this.decode(iobuffer));
-                const minute = Number(this.decode(iobuffer));
-                const second = Number(this.decode(iobuffer));
-                const tzMinuteOffset = Number(this.decode(iobuffer));
+                const year = Number(iobuffer.readInt64());
+                const month = Number(iobuffer.readInt64());
+                const day = Number(iobuffer.readInt64());
+                const hour = Number(iobuffer.readInt64());
+                const minute = Number(iobuffer.readInt64());
+                const second = Number(iobuffer.readInt64());
+                const tzMinuteOffset = Number(iobuffer.readInt64());
                 return new DateTime(year, month, day, hour, minute, second, tzMinuteOffset);
             }
             case Protocol.DataType.PATH: {
@@ -125,7 +125,7 @@ class MessageDecoder {
                 from = this.decode(iobuffer);
                 start = from;
                 for (let i = 0; i < pathLength; ++i) {
-                    reverse = this.decode(iobuffer);
+                    reverse = iobuffer.readUInt8() === Protocol.DataType.BOOL_TRUE;
                     type = this.decode(iobuffer);
                     to = this.decode(iobuffer);
                     pathSegments.push(new GraphPathSegment(from, to, type, reverse));

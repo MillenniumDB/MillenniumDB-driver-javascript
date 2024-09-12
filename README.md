@@ -98,7 +98,7 @@ The alternatives for consuming results must never be mixed because it would gene
 
 This is the preferred way to consume the results, as it is the only that does not hold all the results in memory, it just streams it to an observer object provided by the user. The observer must implement the following methods:
 
-* `onVariables`: First event trigerred, just once. It will return the variable names of the query.
+* `onVariables`: First event trigerred, just once. It will return the variable names of the query. Optionally the second argument can be passed and it will receive the `QueryPreamble`, useful for query cancellation.
 * `onRecord`: Subsequent events triggered for each record available in the query result. It will return a `Record` object.
 * `onSuccess`: Trigerred at the end of the query execution. It will return a summary for the query. No more events are triggered afterwards.
 * `onError`: Trigerred if an error occurs during the query execution. It will return an error. No more events are triggered afterwards. This could even happen before receiving the `onVariables` event.
