@@ -4,6 +4,7 @@ namespace Protocol {
     export enum ModelId {
         QUAD_MODEL_ID = 0,
         RDF_MODEL_ID = 1,
+        GQL_MODEL_ID = 2,
 
         TOTAL,
     }
