@@ -17,6 +17,8 @@ class Catalog {
                 return 'quad';
             case Protocol.ModelId.RDF_MODEL_ID:
                 return 'rdf';
+            case Protocol.ModelId.GQL_MODEL_ID:
+                return 'gql';
             default:
                 throw new MillenniumDBError('Catalog Error: Invalid ModelId ' + this._modelId);
         }
