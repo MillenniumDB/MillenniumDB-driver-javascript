@@ -4,10 +4,12 @@ import Protocol from './protocol';
 class Catalog {
     private readonly _modelId: Protocol.ModelId;
     private readonly _version: number;
+    private readonly _metadata: any;
 
     constructor(summary: any) {
         this._modelId = Number(summary.modelId);
         this._version = Number(summary.version);
+        this._metadata = summary.metadata;
         this._validateModelId(this._modelId);
     }
 
@@ -30,6 +32,10 @@ class Catalog {
 
     public getVersion(): number {
         return this._version;
+    }
+
+    public getMetadata(): any {
+        return this._metadata;
     }
 
     private _validateModelId(modelId: Protocol.ModelId): void {
