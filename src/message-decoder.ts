@@ -1,6 +1,7 @@
 import {
     DateTime,
     Decimal,
+    Direction,
     GraphAnon,
     GraphEdge,
     GraphNode,
@@ -120,15 +121,15 @@ class MessageDecoder {
                 }
 
                 const pathSegments: Array<GraphPathSegment> = [];
-                let reverse: boolean;
-                let start, end, from, to, type: any;
-                from = this.decode(iobuffer);
+                let start: any;
+                let end: any;
+                let from: any = this.decode(iobuffer);
                 start = from;
                 for (let i = 0; i < pathLength; ++i) {
-                    reverse = iobuffer.readUInt8() === Protocol.DataType.BOOL_TRUE;
-                    type = this.decode(iobuffer);
-                    to = this.decode(iobuffer);
-                    pathSegments.push(new GraphPathSegment(from, to, type, reverse));
+                    const direction = this._decodeString(iobuffer) as Direction;
+                    const type = this.decode(iobuffer);
+                    const to = this.decode(iobuffer);
+                    pathSegments.push(new GraphPathSegment(from, to, type, direction));
                     from = to;
                 }
                 end = from;

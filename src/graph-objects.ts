@@ -167,6 +167,8 @@ export class Decimal {
     }
 }
 
+export type Direction = 'left' | 'right' | 'undirected';
+
 /**
  * The GraphPathSegment class represents a segment in the path
  */
@@ -177,17 +179,14 @@ export class GraphPathSegment {
     public readonly to: any;
     /** The type of the segment */
     public readonly type: any;
-    /**
-     * Whether the segment is reversed, useful for printing a sequence of segments. If reverse is true,
-     * the segment should be printed as `(to)<-[type]-(from)` instead of `(from)-[type]->(to)`
-     */
-    public readonly reverse: boolean;
+    /** The direction of the segment */
+    public readonly direction: Direction;
 
-    constructor(from: any, to: any, type: any, reverse: boolean) {
+    constructor(from: any, to: any, type: any, direction: Direction) {
         this.from = from;
         this.to = to;
         this.type = type;
-        this.reverse = reverse;
+        this.direction = direction;
     }
 }
 
