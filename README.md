@@ -1,5 +1,9 @@
 # MillenniumDB driver for JavaScript (Browser and Node.js)
 
+[![npm Latest Release](https://img.shields.io/npm/v/millenniumdb-driver.svg)](https://npmjs.com/package/millenniumdb-driver)
+[![npm downloads](https://img.shields.io/npm/dm/millenniumdb-driver.svg?label=npm%20downloads)](https://npmjs.com/package/millenniumdb-driver)
+![License](https://img.shields.io/npm/l/millenniumdb-driver)
+
 * [GitHub repository](https://github.com/MillenniumDB/MillenniumDB-driver-javascript/)
 * [NPM package](https://www.npmjs.com/package/millenniumdb-driver/)
 * [API documentation](https://millenniumdb.github.io/MillenniumDB-driver-javascript/)
