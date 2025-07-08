@@ -37,55 +37,36 @@ const driver = (url: string): Driver => {
     return new Driver(url);
 };
 
-const types = {
+export default { driver };
+
+export {
+    driver,
+    Catalog,
+    CatalogObserver,
+    ChunkDecoder,
     DateTime,
     Decimal,
+    Driver,
     GraphAnon,
     GraphEdge,
     GraphNode,
     GraphPath,
     GraphPathSegment,
+    IOBuffer,
     IRI,
-    Result,
+    MessageDecoder,
+    MillenniumDBError,
+    QueryObserver,
     Record,
+    ResponseHandler,
+    ResponseMessage,
+    Result,
+    ResultObserver,
+    Session,
     SimpleDate,
     StringDatatype,
     StringLang,
     Time,
+    WebSocketConnection,
+    WebSocketType,
 };
-
-export default { driver };
-export { driver, types };
-
-// Some types may be innecessary for the user, but I want to expose them in the documentation
-    export type {
-        Catalog,
-        CatalogObserver,
-        ChunkDecoder,
-        DateTime,
-        Decimal,
-        Driver,
-        GraphAnon,
-        GraphEdge,
-        GraphNode,
-        GraphPath,
-        GraphPathSegment,
-        IOBuffer,
-        IRI,
-        MessageDecoder,
-        MillenniumDBError,
-        QueryObserver,
-        Record,
-        ResponseHandler,
-        ResponseMessage,
-        Result,
-        ResultObserver,
-        Session,
-        SimpleDate,
-        StringDatatype,
-        StringLang,
-        Time,
-        WebSocketConnection,
-        WebSocketType
-    };
-
