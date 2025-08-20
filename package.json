@@ -1,5 +1,5 @@
 {
-  "name": "millenniumdb-driver",
+  "name": "@millenniumdb/driver",
   "repository": {
     "type": "git",
     "url": "git://github.com/MillenniumDB/MillenniumDB-driver-javascript.git"
@@ -8,7 +8,7 @@
     "url": "https://github.com/MillenniumDB/MillenniumDB-driver-javascript/issues"
   },
   "homepage": "https://github.com/MillenniumDB/MillenniumDB-driver-javascript#readme",
-  "version": "1.7.10",
+  "version": "1.0.1",
   "description": "The official MillenniumDB driver for JavaScript",
   "author": "Vicente Calisto",
   "license": "MIT",

@@ -1,23 +1,23 @@
 # MillenniumDB driver for JavaScript (Browser and Node.js)
 
-[![npm Latest Release](https://img.shields.io/npm/v/millenniumdb-driver.svg)](https://npmjs.com/package/millenniumdb-driver)
-[![npm downloads](https://img.shields.io/npm/dm/millenniumdb-driver.svg?label=npm%20downloads)](https://npmjs.com/package/millenniumdb-driver)
-![License](https://img.shields.io/npm/l/millenniumdb-driver)
+[![npm Latest Release](https://img.shields.io/npm/v/@millenniumdb/driver.svg)](https://npmjs.com/package/@millenniumdb/driver)
+[![npm downloads](https://img.shields.io/npm/dm/@millenniumdb/driver.svg?label=npm%20downloads)](https://npmjs.com/package/@millenniumdb/driver)
+![License](https://img.shields.io/npm/l/@millenniumdb/driver)
 
 * [GitHub repository](https://github.com/MillenniumDB/MillenniumDB-driver-javascript/)
-* [NPM package](https://www.npmjs.com/package/millenniumdb-driver/)
+* [NPM package](https://www.npmjs.com/package/@millenniumdb/driver/)
 * [API documentation](https://millenniumdb.github.io/MillenniumDB-driver-javascript/)
 
 ## Installation - npm
 
 ```bash
-npm install millenniumdb-driver
+npm install @millenniumdb/driver
 ```
 
 Then you can require the MillenniumDB object module:
 
 ```js
-var MillenniumDB = require('millenniumdb-driver');
+var MillenniumDB = require('@millenniumdb/driver');
 ```
 
 ## Installation - browser
@@ -26,19 +26,19 @@ Make the `MillenniumDB` object available globally with:
 
 ```html
 <!-- Direct reference non-minified -->
-<script src="/lib/browser/millenniumdb-driver.js"></script>
+<script src="/lib/browser/index.js"></script>
 <!-- Direct reference minified -->
-<script src="/lib/browser/millenniumdb-driver.min.js"></script>
+<script src="/lib/browser/index.min.js"></script>
 
 <!-- unpkg CDN non-minified -->
-<script src="https://unpkg.com/millenniumdb-driver@latest/lib/browser/millenniumdb-driver.js"></script>
+<script src="https://unpkg.com/@millenniumdb/driver@latest/lib/browser/index.js"></script>
 <!-- unpkg CDN minified -->
-<script src="https://unpkg.com/millenniumdb-driver@latest/lib/browser/millenniumdb-driver.min.js"></script>
+<script src="https://unpkg.com/@millenniumdb/driver@latest/lib/browser/index.min.js"></script>
 
 <!-- jsDelivr CDN non-minified -->
-<script src="https://cdn.jsdelivr.net/npm/millenniumdb-driver@latest/lib/browser/millenniumdb-driver.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@millenniumdb/driver@latest/lib/browser/index.js"></script>
 <!-- jsDelivr CDN minified -->
-<script src="https://cdn.jsdelivr.net/npm/millenniumdb-driver@latest/lib/browser/millenniumdb-driver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@millenniumdb/driver@latest/lib/browser/index.min.js"></script>
 ```
 
 Or use the ESM versions
@@ -46,17 +46,17 @@ Or use the ESM versions
 ```html
 <script type="module">
   // Direct reference non-minified
-  import MillenniumDB from '/lib/browser/millenniumdb-driver.esm.js';
+  import MillenniumDB from '/lib/browser/index.esm.js';
   // Direct reference minified
-  import MillenniumDB from '/lib/browser/millenniumdb-driver.esm.min.js';
+  import MillenniumDB from '/lib/browser/index.esm.min.js';
   // unpkg CDN non-minified
-  import MillenniumDB from 'https://unpkg.com/millenniumdb-driver@latest/lib/browser/millenniumdb-driver.esm.js';
+  import MillenniumDB from 'https://unpkg.com/@millenniumdb/driver@latest/lib/browser/index.esm.js';
   // unpkg CDN minified
-  import MillenniumDB from 'https://unpkg.com/millenniumdb-driver@latest/lib/browser/millenniumdb-driver.esm.min.js';
+  import MillenniumDB from 'https://unpkg.com/@millenniumdb/driver@latest/lib/browser/index.esm.min.js';
   // jsDelivr CDN non-minified
-  import MillenniumDB from 'https://cdn.jsdelivr.net/npm/millenniumdb-driver@latest/lib/browser/millenniumdb-driver.esm.js';
+  import MillenniumDB from 'https://cdn.jsdelivr.net/npm/@millenniumdb/driver@latest/lib/browser/index.esm.js';
   // jsDelivr CDN minified
-  import MillenniumDB from 'https://cdn.jsdelivr.net/npm/millenniumdb-driver@latest/lib/browser/millenniumdb-driver.esm.min.js';
+  import MillenniumDB from 'https://cdn.jsdelivr.net/npm/@millenniumdb/driver@latest/lib/browser/index.esm.min.js';
 </script>
 ```
 

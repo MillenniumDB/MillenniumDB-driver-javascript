@@ -72,7 +72,20 @@ class Result {
      * @returns a promise that resolves when the records are received
      */
     records(): Promise<Array<Record>> {
-        return this._getRecordsPromise();
+        if (this._recordsPromise === null) {
+            this._recordsPromise = new Promise((resolve, reject) => {
+                const records: Array<Record> = [];
+                this._queryObserver.subscribe(
+                    this._wrapObserver({
+                        onRecord: (record) => records.push(record),
+                        onSuccess: () => resolve(records),
+                        onError: (error) => reject(error),
+                    })
+                );
+            });
+        }
+
+        return this._recordsPromise;
     }
 
     /**
@@ -112,21 +125,6 @@ class Result {
 
     unsubscribe(): void {
         this._queryObserver.unsubscribe();
-    }
-
-    private _getRecordsPromise(): Promise<Array<Record>> {
-        if (this._recordsPromise === null) {
-            this._recordsPromise = new Promise((resolve, reject) => {
-                const records: Array<Record> = [];
-                this._queryObserver.subscribe({
-                    onRecord: (record) => records.push(record),
-                    onSuccess: () => resolve(records),
-                    onError: (error) => reject(error),
-                });
-            });
-        }
-
-        return this._recordsPromise;
     }
 
     /**

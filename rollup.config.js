@@ -6,7 +6,7 @@ const LIB_DIR = 'lib';
 const INPUT = LIB_DIR + '/index.js';
 const PLUGINS = [nodeResolve({ preferBuiltins: false, browser: true }), commonjs()];
 const MINIFIER = terser({ keep_classnames: true, keep_fnames: true });
-const OUTPUT_PREFIX = LIB_DIR + '/browser/millenniumdb-driver';
+const OUTPUT_PREFIX = LIB_DIR + '/browser/index';
 
 const COMMON_CONFIG = {
     input: INPUT,
