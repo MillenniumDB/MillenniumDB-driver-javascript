@@ -10,7 +10,7 @@ export class GraphNode {
     }
 
     toString(): string {
-        return this.id.toString();
+        return this.id;
     }
 }
 
@@ -26,7 +26,7 @@ export class GraphEdge {
     }
 
     toString(): string {
-        return this.id.toString();
+        return this.id;
     }
 }
 
@@ -39,7 +39,7 @@ export class GraphAnon {
     }
 
     toString(): string {
-        return this.id.toString();
+        return this.id;
     }
 }
 
@@ -217,7 +217,7 @@ export class IRI {
     }
 
     toString(): string {
-        return this.iri;
+        return `<${this.iri}>`;
     }
 }
 

@@ -75,9 +75,18 @@ class Record {
      * @returns the value associated with the key
      */
     get(key: number | string): any {
-        const index: number = typeof key === 'number' ? key : this._variableToIndex[key] ?? -1;
-        if (index > this.length - 1 || index < 0) {
-            throw new MillenniumDBError('Record Error: Index ' + index + ' is out of bounds');
+        let index: number;
+
+        if (typeof key === 'number') {
+            index = key;
+        } else if (key in this._variableToIndex) {
+            index = this._variableToIndex[key]!;
+        } else {
+            throw new MillenniumDBError(`Record Error: Unknown variable '${key}'`);
+        }
+
+        if (index < 0 || index >= this.length) {
+            throw new MillenniumDBError(`Record Error: Index ${index} is out of bounds`);
         }
 
         return this._values[index];
@@ -90,8 +99,21 @@ class Record {
      * @returns true if the record has a value associated with the key
      */
     has(key: number | string): boolean {
-        const index: number = typeof key == 'number' ? key : this._variables.indexOf(key);
-        return index < this.length && index > -1;
+        let index: number;
+
+        if (typeof key === 'number') {
+            index = key;
+        } else if (key in this._variableToIndex) {
+            index = this._variableToIndex[key]!;
+        } else {
+            return false;
+        }
+
+        if (index < 0 || index >= this.length) {
+            return false;
+        }
+
+        return this._values[index] !== undefined;
     }
 
     /**

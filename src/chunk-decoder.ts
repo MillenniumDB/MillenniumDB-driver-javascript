@@ -85,7 +85,7 @@ class ChunkDecoder {
         }
 
         return new IOBuffer(
-            buffer.Buffer.concat(this._currentDecodedSlices.map((iobuffer) => iobuffer.buffer))
+            buffer.Buffer.concat(this._currentDecodedSlices.map((iobuffer) => iobuffer.buffer as Uint8Array))
         );
     }
 
