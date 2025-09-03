@@ -2,7 +2,7 @@
     "compilerOptions": {
         "declaration": true,
         "declarationDir": "types/",
-        "target": "nodenext",
+        "target": "esnext",
         "module": "nodenext",
         "moduleResolution": "nodenext",
         "allowJs": false,
