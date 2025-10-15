@@ -6,8 +6,9 @@ import IOBuffer from './iobuffer';
 import MessageDecoder from './message-decoder';
 import MillenniumDBError from './millenniumdb-error';
 import QueryObserver from './query-observer';
-import RequestBuilder from './request-builder';
-import ResponseHandler, { ResponseHandlerObserver, ResponseMessage } from './response-handler';
+import RequestBuffer from './request-buffer';
+import RequestWriter from './request-writer';
+import ResponseHandler, { ResponseMessage } from './response-handler';
 import Result from './result';
 import WebSocketConnection from './websocket-connection';
 
@@ -21,6 +22,8 @@ class Session {
     private readonly _messageDecoder: MessageDecoder;
     private readonly _responseHandler: ResponseHandler;
     private readonly _results: Array<Result>;
+    private readonly _requestBuffer: RequestBuffer;
+    private readonly _requestWriter: RequestWriter;
 
     /**
      * This constructor should never be called directly
@@ -30,15 +33,17 @@ class Session {
      */
     constructor(url: URL) {
         this._open = true;
+        this._responseHandler = new ResponseHandler();
         this._chunkDecoder = new ChunkDecoder(this._onChunksDecoded);
         this._messageDecoder = new MessageDecoder();
-        this._responseHandler = new ResponseHandler();
         this._results = [];
         this._connection = new WebSocketConnection(
             url,
             this._onServerMessage.bind(this),
             this._responseHandler.triggerConnectionError.bind(this._responseHandler)
         );
+        this._requestBuffer = new RequestBuffer(this._connection);
+        this._requestWriter = new RequestWriter(this._requestBuffer);
     }
 
     /**
@@ -48,8 +53,13 @@ class Session {
      */
     async catalog(): Promise<Catalog> {
         this._ensureOpen();
+
         const catalogObserver = new CatalogObserver();
-        this._send(RequestBuilder.catalog(), catalogObserver);
+        this._responseHandler.addObserver(catalogObserver);
+
+        this._requestWriter.writeCatalog();
+        this._requestWriter.flush();
+
         return new Promise((resolve, reject) => {
             catalogObserver.subscribe({
                 onSuccess: (summary) => {
@@ -68,10 +78,15 @@ class Session {
      * @param query the query to execute
      * @returns a {@link Result} for the query
      */
-    run(query: string): Result {
+    run(query: string, parameters: Record<string, any> = {} /*timeout: number = 0.0*/): Result {
+        // TODO: timeout (like python driver)!
         this._ensureOpen();
+
         const queryObserver = new QueryObserver();
-        this._send(RequestBuilder.run(query), queryObserver);
+        this._responseHandler.addObserver(queryObserver);
+
+        this._requestWriter.writeRun(query, parameters);
+        this._requestWriter.flush();
 
         const result = new Result(queryObserver);
         this._results.push(result);
@@ -104,8 +119,12 @@ class Session {
         }
 
         const cancelObserver = new CancelObserver();
+        this._responseHandler.addObserver(cancelObserver);
+
         const { workerIndex, cancellationToken } = result._queryPreamble!;
-        this._send(RequestBuilder.cancel(workerIndex, cancellationToken), cancelObserver);
+        this._requestWriter.writeCancel(workerIndex, cancellationToken);
+        this._requestWriter.flush();
+
         return new Promise((resolve, reject) => {
             cancelObserver.subscribe({
                 onSuccess: () => {
@@ -122,17 +141,6 @@ class Session {
         if (!this._open) {
             throw new MillenniumDBError('Session Error: session is closed');
         }
-    }
-
-    /**
-     * Send a request to the server and attach an observer for its response
-     *
-     * @param iobuffer the data to send
-     * @param observer that will handle the received data
-     */
-    private _send(iobuffer: IOBuffer, observer: ResponseHandlerObserver): void {
-        this._responseHandler.addObserver(observer);
-        this._connection.write(iobuffer);
     }
 
     /**

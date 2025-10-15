@@ -19,27 +19,27 @@ export class GraphNode {
  */
 export class GraphEdge {
     /** The edge identifier */
-    public readonly id: string;
+    public readonly id: number;
 
-    constructor(id: string) {
+    constructor(id: number) {
         this.id = id;
     }
 
     toString(): string {
-        return this.id;
+        return `_e${this.id}`;
     }
 }
 
 export class GraphAnon {
     /** The anonymous node identifier */
-    public readonly id: string;
+    public readonly id: number;
 
-    constructor(id: string) {
+    constructor(id: number) {
         this.id = id;
     }
 
     toString(): string {
-        return this.id;
+        return `_a${this.id}`;
     }
 }
 
@@ -217,7 +217,7 @@ export class IRI {
     }
 
     toString(): string {
-        return `<${this.iri}>`;
+        return this.iri;
     }
 }
 

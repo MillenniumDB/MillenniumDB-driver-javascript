@@ -81,12 +81,12 @@ class MessageDecoder {
                 return new GraphNode(nodeId);
             }
             case Protocol.DataType.EDGE: {
-                const edgeId = this._decodeString(iobuffer);
-                return new GraphEdge(edgeId);
+                const edgeId = iobuffer.readInt64();
+                return new GraphEdge(Number(edgeId));
             }
             case Protocol.DataType.ANON: {
-                const anonId = this._decodeString(iobuffer);
-                return new GraphAnon(anonId);
+                const anonId = iobuffer.readInt64();
+                return new GraphAnon(Number(anonId));
             }
             case Protocol.DataType.DATE: {
                 const year = Number(iobuffer.readInt64());

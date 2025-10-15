@@ -40,12 +40,20 @@ class IOBuffer {
         return this.buffer.readUInt32BE(this._updateCurrentPosition(4));
     }
 
-    readUInt64(): bigint {
-        return this.buffer.readBigUInt64BE(this._updateCurrentPosition(8));
+    readUInt64(): bigint | number {
+        const value = this.buffer.readBigUInt64BE(this._updateCurrentPosition(8));
+        if (Number.MIN_SAFE_INTEGER <= value && value <= Number.MAX_SAFE_INTEGER) {
+            return Number(value);
+        }
+        return value;
     }
 
-    readInt64(): bigint {
-        return this.buffer.readBigInt64BE(this._updateCurrentPosition(8));
+    readInt64(): bigint | number {
+        const value = this.buffer.readBigInt64BE(this._updateCurrentPosition(8));
+        if (Number.MIN_SAFE_INTEGER <= value && value <= Number.MAX_SAFE_INTEGER) {
+            return Number(value);
+        }
+        return value;
     }
 
     readFloat(): number {
