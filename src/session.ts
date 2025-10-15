@@ -76,10 +76,10 @@ class Session {
      * Sends a request for executing a query to the server
      *
      * @param query the query to execute
+     * @param parameters the query parameters
      * @returns a {@link Result} for the query
      */
-    run(query: string, parameters: Record<string, any> = {} /*timeout: number = 0.0*/): Result {
-        // TODO: timeout (like python driver)!
+    run(query: string, parameters: Record<string, any> = {}): Result {
         this._ensureOpen();
 
         const queryObserver = new QueryObserver();
@@ -90,6 +90,7 @@ class Session {
 
         const result = new Result(queryObserver);
         this._results.push(result);
+
         return result;
     }
 
