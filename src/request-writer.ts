@@ -167,7 +167,7 @@ class RequestWriter {
         const encoder = new TextEncoder();
         const encoded = encoder.encode(value);
 
-        const res: Uint8Array = new Uint8Array(5 + value.length);
+        const res: Uint8Array = new Uint8Array(5 + encoded.length);
         res[0] = datatype;
         res.set(this._encodeBytes(encoded), 1);
         return res;
