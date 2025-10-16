@@ -1,7 +1,6 @@
 import RequestBuffer from './request-buffer';
 import Protocol from './protocol';
 import MillenniumDBError from './millenniumdb-error';
-import buffer from 'buffer';
 import { GraphAnon, GraphEdge, GraphNode, IRI, StringDatatype, StringLang } from './graph-objects';
 
 class RequestWriter {
@@ -82,23 +81,26 @@ class RequestWriter {
 
     private _writeUint32(value: number): void {
         this._writeByte(Protocol.DataType.UINT32);
-        const bytes = buffer.Buffer.alloc(4);
-        bytes.writeUInt32BE(value);
-        this._requestBuffer.write(bytes as Uint8Array);
+        const bytes = new Uint8Array(4);
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+        view.setUint32(0, value);
+        this._requestBuffer.write(bytes);
     }
 
     private _writeInt64(value: bigint): void {
         this._writeByte(Protocol.DataType.INT64);
-        const bytes = buffer.Buffer.alloc(8);
-        bytes.writeBigInt64BE(value);
-        this._requestBuffer.write(bytes as Uint8Array);
+        const bytes = new Uint8Array(8);
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+        view.setBigInt64(0, value);
+        this._requestBuffer.write(bytes);
     }
 
     private _writeFloat(value: number): void {
-        const bytes = buffer.Buffer.alloc(5);
-        bytes.writeFloatBE(value);
         this._writeByte(Protocol.DataType.FLOAT);
-        this._requestBuffer.write(bytes as Uint8Array);
+        const bytes = new Uint8Array(4);
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+        view.setFloat32(0, value);
+        this._requestBuffer.write(bytes);
     }
 
     private _writeNamedNode(value: string): void {
@@ -108,16 +110,18 @@ class RequestWriter {
 
     private _writeEdge(value: bigint): void {
         this._writeByte(Protocol.DataType.EDGE);
-        const bytes = buffer.Buffer.alloc(8);
-        bytes.writeBigUint64BE(value);
-        this._requestBuffer.write(bytes as Uint8Array);
+        const bytes = new Uint8Array(8);
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+        view.setBigUint64(0, value);
+        this._requestBuffer.write(bytes);
     }
 
     private _writeAnon(value: bigint): void {
         this._writeByte(Protocol.DataType.ANON);
-        const bytes = buffer.Buffer.alloc(8);
-        bytes.writeBigUint64BE(value);
-        this._requestBuffer.write(bytes as Uint8Array);
+        const bytes = new Uint8Array(8);
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+        view.setBigUint64(0, value);
+        this._requestBuffer.write(bytes);
     }
 
     private _writeString(value: string): void {
@@ -181,9 +185,10 @@ class RequestWriter {
     }
 
     private _encodeSize(value: number): Uint8Array {
-        const bytes = buffer.Buffer.alloc(4);
-        bytes.writeUint32BE(value);
-        return bytes as Uint8Array;
+        const bytes = new Uint8Array(4);
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+        view.setUint32(0, value);
+        return bytes;
     }
 }
 

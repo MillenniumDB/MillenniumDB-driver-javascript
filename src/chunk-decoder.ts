@@ -1,6 +1,5 @@
 import IOBuffer from './iobuffer';
 
-import buffer from 'buffer';
 import MillenniumDBError from './millenniumdb-error';
 
 /**
@@ -84,9 +83,17 @@ class ChunkDecoder {
             return this._currentDecodedSlices[0]!;
         }
 
-        return new IOBuffer(
-            buffer.Buffer.concat(this._currentDecodedSlices.map((iobuffer) => iobuffer.buffer as Uint8Array))
-        );
+        const totalLength = this._currentDecodedSlices.reduce((sum, buf) => sum + buf.length, 0);
+        const merged = new ArrayBuffer(totalLength);
+        const mergedView = new Uint8Array(merged);
+
+        let offset = 0;
+        for (const decodedSlice of this._currentDecodedSlices) {
+            mergedView.set(new Uint8Array(decodedSlice.buffer), offset);
+            offset += decodedSlice.length;
+        }
+
+        return new IOBuffer(merged);
     }
 
     private _handleDecodedHeader() {
