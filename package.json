@@ -8,7 +8,7 @@
     "url": "https://github.com/MillenniumDB/MillenniumDB-driver-javascript/issues"
   },
   "homepage": "https://github.com/MillenniumDB/MillenniumDB-driver-javascript#readme",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "The official MillenniumDB driver for JavaScript",
   "author": "Vicente Calisto",
   "license": "MIT",
