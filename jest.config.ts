@@ -8,7 +8,7 @@ const config: Config = {
             testEnvironment: 'node',
             globals: {
                 'ts-jest': {
-                    tsconfig: 'tsconfig.json', // 👈 force Jest to use your tsconfig
+                    tsconfig: 'tsconfig.json',
                 },
             },
         },
@@ -18,7 +18,7 @@ const config: Config = {
             testEnvironment: 'jsdom',
             globals: {
                 'ts-jest': {
-                    tsconfig: 'tsconfig.json', // 👈 force Jest to use your tsconfig
+                    tsconfig: 'tsconfig.json',
                 },
             },
         },

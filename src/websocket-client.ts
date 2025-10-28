@@ -1,8 +1,7 @@
 import MillenniumDBError from './millenniumdb-error';
 
-import { WebSocket as WebSocketNode } from 'ws';
-
-type WebSocketType = WebSocket | WebSocketNode;
+type WebSocketNodeType = import('ws').WebSocket;
+type WebSocketType = WebSocket | WebSocketNodeType;
 
 /**
  * Create a new WebSocket client either for browser or NodeJS environment
@@ -17,6 +16,7 @@ function createWebSocketClient(url: URL): WebSocketType {
         process.versions.node != null
     ) {
         // NodeJS
+        const { WebSocket: WebSocketNode } = require('ws');
         return new WebSocketNode(url);
     } else {
         // Browser, WebWorker, others

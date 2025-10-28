@@ -1,5 +1,4 @@
 import IOBuffer from './iobuffer';
-import RequestBuffer from './iobuffer';
 import { createWebSocketClient, WebSocketType } from './websocket-client';
 
 /**
@@ -11,7 +10,7 @@ class WebSocketConnection {
     private _closingPromise: Promise<void> | null;
     private readonly _onMessage: (iobuffer: IOBuffer) => void;
     private readonly _onError: (error: string) => void;
-    private readonly _pendingRequests: Array<RequestBuffer>;
+    private readonly _pendingData: Array<Uint8Array>;
     private readonly _ws: WebSocketType;
 
     /**
@@ -32,8 +31,8 @@ class WebSocketConnection {
         this._open = true;
         // The connection is established
         this._wsOpen = false;
-        // Requests waiting to be written when the connection is established
-        this._pendingRequests = [];
+        // Data waiting to be written when the connection is established
+        this._pendingData = [];
         // Promise that will be resolved when the connection is closed
         this._closingPromise = null;
         // The WebSocket instance
@@ -42,17 +41,17 @@ class WebSocketConnection {
 
     /**
      * Write a request. If the connection is not established yet, it will be enqueued
-     * @param iobuffer a buffer containing the request
+     * @param data the data to write
      */
-    write(iobuffer: IOBuffer): void {
+    write(data: Uint8Array): void {
         this._ensureOpen();
 
         if (!this._wsOpen) {
-            this._pendingRequests.push(iobuffer);
+            this._pendingData.push(data);
             return;
         }
 
-        this._ws.send(iobuffer.buffer);
+        this._ws.send(data);
     }
 
     /**
@@ -116,11 +115,11 @@ class WebSocketConnection {
             // Connection is established
             this._wsOpen = true;
 
-            // Write all pending requests as the connection is now established
-            for (const requestBuffer of this._pendingRequests) {
-                this.write(requestBuffer);
+            // Write all pending data as the connection is now established
+            for (const data of this._pendingData) {
+                this.write(data);
             }
-            this._pendingRequests.length = 0;
+            this._pendingData.length = 0;
         };
 
         ws.onclose = (event: CloseEvent) => {

@@ -1,4 +1,4 @@
-import MillenniumDB from '../src/index';
+import MillenniumDB, { IRI } from '../src/index';
 import Driver from '../src/driver';
 
 describe('Entry point', () => {
@@ -9,5 +9,11 @@ describe('Entry point', () => {
 
     it('driver returns an instance of Driver', () => {
         expect(MillenniumDB.driver('http://www.example.com/')).toBeInstanceOf(Driver);
+    });
+
+    it('Can create an IRI', () => {
+        const str = 'http://example.com';
+        const iri = new IRI(str);
+        expect(iri.iri).toBe(str);
     });
 });

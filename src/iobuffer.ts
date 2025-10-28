@@ -1,90 +1,93 @@
 import MillenniumDBError from './millenniumdb-error';
 
-import buffer from 'buffer';
-
 /**
  * IOBuffer is a class that can be used to read and write data to and from a binary buffer
  */
 class IOBuffer {
-    public readonly buffer: buffer.Buffer;
+    public readonly buffer: ArrayBuffer;
     public readonly length: number;
+    public readonly _view: DataView;
     private _currentPosition: number;
+    private _decoder = new TextDecoder('utf-8');
 
     /**
      * This constructor should not be called directly
      *
      * @param arg the buffer to use
      */
-    constructor(arg: ArrayBuffer | buffer.Buffer) {
-        if (arg instanceof ArrayBuffer) {
-            this.buffer = buffer.Buffer.from(arg);
-        } else if (arg instanceof buffer.Buffer) {
-            this.buffer = arg;
-        } else {
-            throw new MillenniumDBError('IOBuffer Error: Invalid argument with type ' + typeof arg);
-        }
-
-        this.length = this.buffer.length;
+    constructor(arg: ArrayBuffer) {
+        this.buffer = arg;
+        this.length = this.buffer.byteLength;
+        this._view = new DataView(this.buffer);
         this._currentPosition = 0;
     }
 
     readUInt8(): number {
-        return this.buffer.readUInt8(this._updateCurrentPosition(1));
+        return this._view.getUint8(this._updateCurrentPosition(1));
     }
 
     readUInt16(): number {
-        return this.buffer.readUInt16BE(this._updateCurrentPosition(2));
+        return this._view.getUint16(this._updateCurrentPosition(2));
     }
 
     readUInt32(): number {
-        return this.buffer.readUInt32BE(this._updateCurrentPosition(4));
+        return this._view.getUint32(this._updateCurrentPosition(4));
     }
 
-    readUInt64(): bigint {
-        return this.buffer.readBigUInt64BE(this._updateCurrentPosition(8));
+    readUInt64(): bigint | number {
+        const value = this._view.getBigUint64(this._updateCurrentPosition(8));
+        if (Number.MIN_SAFE_INTEGER <= value && value <= Number.MAX_SAFE_INTEGER) {
+            return Number(value);
+        }
+        return value;
     }
 
-    readInt64(): bigint {
-        return this.buffer.readBigInt64BE(this._updateCurrentPosition(8));
+    readInt64(): bigint | number {
+        const value = this._view.getBigInt64(this._updateCurrentPosition(8));
+        if (Number.MIN_SAFE_INTEGER <= value && value <= Number.MAX_SAFE_INTEGER) {
+            return Number(value);
+        }
+        return value;
     }
 
     readFloat(): number {
-        return this.buffer.readFloatBE(this._updateCurrentPosition(4));
+        return this._view.getFloat32(this._updateCurrentPosition(4));
     }
 
     readDouble(): number {
-        return this.buffer.readDoubleBE(this._updateCurrentPosition(8));
+        return this._view.getFloat64(this._updateCurrentPosition(8));
     }
 
     readSlice(numBytes: number): IOBuffer {
         return new IOBuffer(
-            this.buffer.subarray(this._updateCurrentPosition(numBytes), this._currentPosition)
+            this.buffer.slice(this._updateCurrentPosition(numBytes), this._currentPosition)
         );
     }
 
     readString(numBytes: number): string {
-        return this.buffer.toString(
-            'utf-8',
+        const slice = new Uint8Array(
+            this._view.buffer,
             this._updateCurrentPosition(numBytes),
-            this._currentPosition
+            numBytes
         );
+        return this._decoder.decode(slice);
     }
 
-    writeUInt8(value: number): void {
-        this.buffer.writeUInt8(value, this._updateCurrentPosition(1));
-    }
+    // writeUInt8(value: number): void {
+    //     this._view.setUint8(value, this._updateCurrentPosition(1));
+    // }
 
-    writeUInt16(value: number): void {
-        this.buffer.writeUInt16BE(value, this._updateCurrentPosition(2));
-    }
+    // writeUInt16(value: number): void {
+    //     this._view.setUint16(value, this._updateCurrentPosition(2));
+    // }
 
-    writeUInt32(value: number): void {
-        this.buffer.writeUInt32BE(value, this._updateCurrentPosition(4));
-    }
+    // writeUInt32(value: number): void {
+    //     this._view.setUint32(value, this._updateCurrentPosition(4));
+    // }
 
-    writeBytes(value: buffer.Buffer): void {
-        this.buffer.set(value, this._updateCurrentPosition(value.length));
-    }
+    // writeBytes(value: ArrayBuffer): void {
+    //     this._view.set(value, this._updateCurrentPosition(value.length));
+    // }
 
     remaining(): number {
         return this.length - this._currentPosition;

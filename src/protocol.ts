@@ -1,5 +1,7 @@
 namespace Protocol {
     export const DEFAULT_FETCH_SIZE: number = 1024;
+    export const BUFFER_SIZE: number = 1400;
+    export const CHUNK_HEADER_SIZE: number = 2;
 
     export enum ModelId {
         QUAD_MODEL_ID = 0,
@@ -39,7 +41,7 @@ namespace Protocol {
     }
 
     export enum RequestType {
-        RUN,
+        QUERY,
         CATALOG,
         CANCEL,
 

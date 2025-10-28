@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
         "declaration": true,
-        "declarationDir": "types/",
-        "target": "ES6",
-        "module": "ES6",
+        "declarationDir": "lib/types",
+        "target": "es2020",
+        "module": "es2015",
         "moduleResolution": "node",
         "allowJs": false,
         "alwaysStrict": true,
