@@ -135,6 +135,32 @@ class MessageDecoder {
                 end = from;
                 return new GraphPath(start, end, pathSegments);
             }
+            case Protocol.DataType.TENSOR: {
+                const tensorDatatype = iobuffer.readUInt8();
+
+                let tensorConstructor;
+                let readValueFn;
+                if (tensorDatatype === Protocol.DataType.FLOAT) {
+                    tensorConstructor = Float32Array;
+                    readValueFn = iobuffer.readFloat.bind(iobuffer);
+                } else if (tensorDatatype === Protocol.DataType.DOUBLE) {
+                    tensorConstructor = Float64Array;
+                    readValueFn = iobuffer.readDouble.bind(iobuffer);
+                } else {
+                    throw new MillenniumDBError(
+                        `MessageDecoder Error: Invalid tensor datatype received: 0x${tensorDatatype.toString(
+                            16
+                        )}`
+                    );
+                }
+
+                const size = iobuffer.readUInt32();
+                const tensor = new tensorConstructor(size);
+                for (let i = 0; i < size; ++i) {
+                    tensor[i] = readValueFn();
+                }
+                return tensor;
+            }
             default:
                 throw new MillenniumDBError(
                     `MessageDecoder Error: Unhandled DataType with code: 0x${type.toString(16)}`

@@ -73,22 +73,6 @@ class IOBuffer {
         return this._decoder.decode(slice);
     }
 
-    // writeUInt8(value: number): void {
-    //     this._view.setUint8(value, this._updateCurrentPosition(1));
-    // }
-
-    // writeUInt16(value: number): void {
-    //     this._view.setUint16(value, this._updateCurrentPosition(2));
-    // }
-
-    // writeUInt32(value: number): void {
-    //     this._view.setUint32(value, this._updateCurrentPosition(4));
-    // }
-
-    // writeBytes(value: ArrayBuffer): void {
-    //     this._view.set(value, this._updateCurrentPosition(value.length));
-    // }
-
     remaining(): number {
         return this.length - this._currentPosition;
     }
