@@ -36,6 +36,7 @@ namespace Protocol {
         PATH,
         LIST,
         MAP,
+        TENSOR,
 
         TOTAL,
     }

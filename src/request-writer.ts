@@ -50,6 +50,10 @@ class RequestWriter {
             }
         } else if (value instanceof GraphAnon) {
             this._writeAnon(BigInt(value.id));
+        } else if (value instanceof Float32Array) {
+            this._writeTensorFloat(value);
+        } else if (value instanceof Float64Array) {
+            this._writeTensorDouble(value);
         } // MQL
         else if (value instanceof GraphNode) {
             this._writeNamedNode(value.id);
@@ -63,7 +67,7 @@ class RequestWriter {
         } else if (value instanceof StringDatatype) {
             this._writeStringDatatype(value);
         } else {
-            throw new MillenniumDBError(`RequestWriter Error: Unsupported type: ${value}`);
+            throw new MillenniumDBError(`RequestWriter Error: Unsupported type: ${typeof value}`);
         }
     }
 
@@ -152,6 +156,34 @@ class RequestWriter {
         const encDatatype = this._encodeBytes(encoded);
         this._requestBuffer.write(encStr);
         this._requestBuffer.write(encDatatype);
+    }
+
+    private _writeTensorFloat(value: Float32Array): void {
+        this._writeByte(Protocol.DataType.TENSOR);
+        this._writeByte(Protocol.DataType.FLOAT);
+
+        const bytes = new Uint8Array(4 + 4 * value.length);
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+
+        bytes.set(this._encodeSize(value.length));
+        for (let i = 0; i < value.length; i++) {
+            view.setFloat32(4 + i * 4, value[i]!, false);
+        }
+        this._requestBuffer.write(bytes);
+    }
+
+    private _writeTensorDouble(value: Float64Array): void {
+        this._writeByte(Protocol.DataType.TENSOR);
+        this._writeByte(Protocol.DataType.DOUBLE);
+
+        const bytes = new Uint8Array(4 + 8 * value.length);
+        const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+
+        bytes.set(this._encodeSize(value.length));
+        for (let i = 0; i < value.length; i++) {
+            view.setFloat64(4 + i * 8, value[i]!, false);
+        }
+        this._requestBuffer.write(bytes);
     }
 
     private _writeParameters(parameters: Record<string, any>): void {
