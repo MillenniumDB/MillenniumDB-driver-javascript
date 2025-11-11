@@ -70,7 +70,7 @@ class RequestBuffer {
         }
 
         if (this._currentPos > 0) {
-            this._connection.write(this._view.subarray(0, this._currentPos));
+            this._connection.write(this._view.slice(0, this._currentPos));
             this._currentPos = 0;
         }
     }

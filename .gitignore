@@ -6,3 +6,5 @@ types/
 
 # Documentation
 docs/
+
+*.html
